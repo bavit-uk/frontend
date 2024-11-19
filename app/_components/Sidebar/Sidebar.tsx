@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Menu, ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
+import {  ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
 import { adminsidebar } from "@/app/dashboard/_sidebarContents/adminSidebar";
 
 export default function Sidebar() {
