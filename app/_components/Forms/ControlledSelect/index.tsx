@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { cn } from "@utils/cn";
+import { cn } from "@/app/_utils/cn";
 import React, { ForwardRefRenderFunction } from "react";
 import { FieldErrors, RegisterOptions, UseFormRegister, UseFormWatch } from "react-hook-form";
 import { LucideIcon } from "lucide-react";
@@ -58,7 +59,7 @@ const ControlledSelect: ForwardRefRenderFunction<HTMLSelectElement, SelectProps>
       </select>
     );
   }
-  const { register, errors, watch, override = false, rules, label, required, onManualClick } = props;
+  const { register, errors, override = false, rules, label, required, onManualClick } = props;
 
   if (!props.name) throw new Error("ControlledInput must have a name prop");
 

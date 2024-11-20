@@ -1,20 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import ControlledInput from '../../Forms/ControlledInput';
-
-// import { closeModal, openModal } from '@lib/features/auth/authSlice';
-// import { useAppDispatch } from '@lib/hooks';
+import { closeModal, openModal } from '../../_lib/features/auth/authSlice';
+import { useAppDispatch } from '../../_lib/hooks';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 // import GoogleLogo from '@assets/Icons/google.webp';
-
+import Divider from '../../ui/Divider';
 import { useMutation } from '@tanstack/react-query';
-// import { client } from '@utils/axios';
-// import Loader from '@components/Loader';
+import { client } from '@/app/_utils/axios';
 import { AxiosError } from 'axios';
-// import { setUser } from '@lib/features/user/userSlice';
+import { setUser } from '../../_lib/features/user/userSlice';
 import { toast } from 'react-toastify';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useRouter } from 'next/navigation';
@@ -27,12 +26,12 @@ type Inputs = {
 
 const Login = ({}) => {
   const router = useRouter();
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
 
-    // getValues,
+    getValues,
     formState: { errors },
   } = useForm<Inputs>({
     reValidateMode: 'onChange',
@@ -43,28 +42,28 @@ const Login = ({}) => {
     },
   });
 
-  // const handleCloseModal = () => {
-  //   dispatch(closeModal());
-  // };
+  const handleCloseModal = () => {
+    dispatch(closeModal());
+  };
 
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
     onSuccess: async (codeResponse) => {
-      // const response = await client.post('/auth/signin-with-google', {
-      //   credentials: 'customHooks',
-      //   code: codeResponse.code,
-      // });
+      const response = await client.post('/auth/signin-with-google', {
+        credentials: 'customHooks',
+        code: codeResponse.code,
+      });
 
-      // const user = response.data.data;
-      // dispatch(
-      //   setUser({
-      //     user: user,
-      //     persist: getValues().rememberMe,
-      //     mode: 'login',
-      //   })
-      // );
+      const user = response.data.data;
+      dispatch(
+        setUser({
+          user: user,
+          persist: getValues().rememberMe,
+          mode: 'login',
+        })
+      );
       toast.success('Logged in successfully');
-      // dispatch(closeModal());
+      dispatch(closeModal());
     },
     onError: (errorResponse) => console.log(errorResponse),
   });
@@ -72,37 +71,37 @@ const Login = ({}) => {
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
       data.email = data.email.toLowerCase();
-      // const response = await client.post('/auth/login', data);
-      // return response.data.data;
+      const response = await client.post('/auth/login', data);
+      return response.data.data;
     },
     onSuccess: (data, inputs) => {
-      // dispatch(
-      //   setUser({
-      //     user: data,
-      //     persist: inputs.rememberMe,
-      //     mode: 'login',
-      //   })
-      // );
-  //     if (data.userType === 'Seller' && data.dealership?.status !== 'Active') {
-  //       // Show success message and close modal if everything is okay
-  //       toast.success('Logged in successfully');
-  //       // dispatch(closeModal());
-  //       router.push('/verify-seller');
-  //     } else if (data.userType === 'Customer') {
-  //       router.push('/vehicles');
-  //       toast.success('Logged in Successfully');
-  //       // dispatch(closeModal());
-  //     } else {
-  //       // Show success message and close modal if everything is okay
-  //       toast.success('Logged in successfully');
-  //       // dispatch(closeModal());
-  //     }
-  //   },
-  //   onError: (error: AxiosError<any>) => {
-  //     console.log(error.response?.data);
-  //     toast.error(
-  //       error.response?.data?.message || 'There was an error logging in'
-  //     );
+      dispatch(
+        setUser({
+          user: data,
+          persist: inputs.rememberMe,
+          mode: 'login',
+        })
+      );
+      if (data.userType === 'Seller' && data.dealership?.status !== 'Active') {
+        // Show success message and close modal if everything is okay
+        toast.success('Logged in successfully');
+        dispatch(closeModal());
+        router.push('/verify-seller');
+      } else if (data.userType === 'Customer') {
+        router.push('/vehicles');
+        toast.success('Logged in Successfully');
+        dispatch(closeModal());
+      } else {
+        // Show success message and close modal if everything is okay
+        toast.success('Logged in successfully');
+        dispatch(closeModal());
+      }
+    },
+    onError: (error: AxiosError<any>) => {
+      console.log(error.response?.data);
+      toast.error(
+        error.response?.data?.message || 'There was an error logging in'
+      );
     },
   });
 
@@ -171,20 +170,20 @@ const Login = ({}) => {
         </div>
 
         <Link
-          // onClick={handleCloseModal}
+          onClick={handleCloseModal}
           href='/Forgot-password'
           className='text-primary cursor-pointer text-xl hover:underline'
         >
           Forgot password?
         </Link>
       </div>
-      {/* <Divider
+      <Divider
         label='or'
         classes={{
           divider: '!my-8',
           label: 'text-xl uppercase -top-3',
         }}
-      /> */}
+      />
 
       <button
         type='button'
@@ -199,7 +198,7 @@ const Login = ({}) => {
         Don&apos;t have an account?{' '}
         <button
           onClick={() => {
-            // dispatch(openModal({ mode: 'register' }));
+            dispatch(openModal({ mode: 'register' }));
           }}
           className='text-primary hover:underline'
         >

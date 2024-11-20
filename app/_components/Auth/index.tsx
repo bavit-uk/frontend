@@ -10,7 +10,7 @@ import {
 import { useAppSelector } from '../_lib/hooks';
 import Login from './Login';
 import Register from './Register';
-// import { closeModal } from "@lib/features/auth/authSlice";
+// import { closeModal } from '../_lib/features/auth/authSlice';
 import Image from 'next/image';
 
 const AuthModal = ({}) => {
@@ -20,9 +20,9 @@ const AuthModal = ({}) => {
   const message = useAppSelector((state) => state.authModal.message);
   // const dispatch = useAppDispatch();
 
-  const close = () => {
-    // dispatch(closeModal());
-  };
+  // const close = () => {
+  //   dispatch(closeModal());
+  // };
 
   return (
     <Transition appear show={isOpen}>
@@ -75,3 +75,7 @@ const AuthModal = ({}) => {
 };
 
 export default AuthModal;
+// function useAppDispatch() {
+//   throw new Error('Function not implemented.');
+// }
+
