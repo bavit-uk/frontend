@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { cn } from "@/app/_utils/cn";
+import { cn } from "../../_utils/cn";
 import { LucideIcon } from "lucide-react";
 import React from "react";
 type ButtonProps = {

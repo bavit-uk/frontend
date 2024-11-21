@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { cn } from "@/app/_utils/cn";
+import { cn } from "../../../_utils/cn";
 import React, { ForwardRefRenderFunction } from "react";
 import {
   FieldErrors,
@@ -9,7 +9,7 @@ import {
   UseFormRegister,
   UseFormWatch,
 } from "react-hook-form";
-import { LucideIcon } from "lucide-react";
+
 
 type Classes = {
   root?: string;
@@ -36,47 +36,24 @@ type FormControlledSelect = {
   onManualClick?: () => void;
 } & CommonProps;
 
-type ControlledSelectProps = {
-  register: undefined;
-  state: string | number;
-  setState: React.Dispatch<React.SetStateAction<string | number>>;
-  Icon?: LucideIcon;
-  placeholder?: string;
-} & CommonProps;
 
-type SelectProps = FormControlledSelect | ControlledSelectProps;
+type SelectProps = FormControlledSelect;
 
 const ControlledSelect: ForwardRefRenderFunction<
   HTMLSelectElement,
   SelectProps
-> = ({ classes, options, placeholder, ...props }, ref) => {
-  if (!props.register) {
-    return (
-      // <select value={props.state} onChange={(e) => props.setState(e.target.value)} className={cn(classes?.select)}>
-      <select
-        value={props.state} // Use value to control the selected option
-        onChange={(e) => props.setState(e.target.value)}
-        className={cn(classes?.select)}
-        ref={ref}
-      >
-        <option value="" disabled>
-          {placeholder || "Select an option"}
-        </option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    );
-  }
+> = (props, ref) => {
+  
   const {
     register,
+    classes,
     errors,
     override = false,
     rules,
     label,
     required,
+    placeholder,
+    options,
     onManualClick,
   } = props;
 

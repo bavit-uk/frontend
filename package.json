@@ -37,7 +37,6 @@
     "uuid": "^11.0.3"
   },
   "devDependencies": {
-    "@types/": "mona-health/react-input-mask",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

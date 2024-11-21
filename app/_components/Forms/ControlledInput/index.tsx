@@ -3,7 +3,7 @@
 "use client";
 
 import React, { ForwardRefRenderFunction, useState } from "react";
-import { cn } from "@/app/_utils/cn";
+import { cn } from "../../../_utils/cn";
 import { FieldErrors, RegisterOptions, UseFormRegister, UseFormWatch } from "react-hook-form";
 import InputMask from "@mona-health/react-input-mask";
 import { Eye, EyeOff } from "lucide-react";
@@ -32,9 +32,8 @@ type ControlledInputProps = {
   onManualClick?: () => void;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-const ControlledInput: ForwardRefRenderFunction<HTMLInputElement, ControlledInputProps> = (
-  { register, errors, classes, onManualClick, override = false, rules, mask = "", label, icon, ...props },
-  reff
+const ControlledInput: React.FC<ControlledInputProps> = (
+  { register, errors, classes, onManualClick, override = false, rules, mask = "", label, icon, ...props }
 ) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -114,4 +113,4 @@ const ControlledInput: ForwardRefRenderFunction<HTMLInputElement, ControlledInpu
   );
 };
 
-export default React.forwardRef(ControlledInput);
+export default ControlledInput;

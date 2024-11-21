@@ -10,27 +10,29 @@ import { useForm } from "react-hook-form";
 // import GoogleLogo from "@assets/Icons/google.webp";
 // import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
-import { client } from "@/app/_utils/axios";
+import { client } from "../../../_utils/axios";
 
 import { AxiosError } from "axios";
 import Loader from "../../Loader";
 // import { useGoogleLogin } from '@react-oauth/google';
-import { auth, googleProvider } from "@/app/_utils/firebase";
+import { auth,googleProvider } from "../../../_utils/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useAppDispatch } from "../../_lib/hooks";
 import { toast } from "react-toastify";
 import Modal from "../../ui/Modal";
 import { useState } from "react";
 import Button from "../../ui/Button";
+import { clearFilter } from "../../_lib/features/homepage/filterSlice";
+
 
 type Inputs = {
-  userType: "Supplier" | "Customer";
+  // userType: "Supplier" | "Customer";
   firstName: string;
   lastName: string;
   phoneNumber: string;
   email: string;
   password: string;
-  confirmPassword: string;
+
 };
 
 // type GoogleTokenType = {
@@ -49,6 +51,7 @@ const Register = ({}) => {
     register,
     handleSubmit,
     watch,
+    getValues,
     formState: { errors },
   } = useForm<Inputs>({
     reValidateMode: "onChange",
@@ -57,14 +60,17 @@ const Register = ({}) => {
   const close = () => {
     dispatch(closeModal());
   };
-
-  const onSubmit = useMutation({
+console.log("getvalues",getValues())
+console.log("errors",errors)
+ const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
+      console.log("before sending req",data)
       data.email = data.email.toLowerCase();
-      data.userType = "Customer";
-      const response = await client.post("/auth/signup", data);
+      // data.userType = "Customer";
+      const response = await client.post("/auth/register", data);
       return response.data.data;
     },
+    
     onSuccess: (data, inputs) => {
       toast.success("You have successfully registered");
       dispatch(openModal({ mode: "login" }));
@@ -116,14 +122,14 @@ const Register = ({}) => {
     }
   };
   return (
-    <>
+    <div className="bg-gray-200 p-8">
       <form
-        className="mt-4 space-y-2 mt-4 space-y-4 px-4 py-6 bg-white shadow-md rounded-lg"
+        className=" space-y-2 my-4 w-1/2 mx-auto space-y-4 px-4 py-6 bg-white shadow-md rounded-lg"
         onSubmit={handleSubmit((data) => onSubmit.mutate(data))}
         noValidate
       >
         {onSubmit.isPending && <Loader />}
-        <ControlledSelect
+        {/* <ControlledSelect
           errors={errors}
           register={register}
           rules={{
@@ -138,7 +144,7 @@ const Register = ({}) => {
             select: "text-xl px-4 py-3",
           }}
           required
-        />
+        /> */}
 
         <ControlledInput
           type="text"
@@ -244,7 +250,7 @@ const Register = ({}) => {
           required
         />
 
-        <ControlledInput
+        {/* <ControlledInput
           type="password"
           name="confirmPassword"
           placeholder="Confirm Password"
@@ -258,7 +264,7 @@ const Register = ({}) => {
             input: "text-xl px-4 py-3",
           }}
           required
-        />
+        /> */}
 
         <button
           className="bg-red-400 w-full rounded-md px-6 py-4 text-xl font-medium text-white"
@@ -287,7 +293,7 @@ const Register = ({}) => {
 
         <p className="text-center text-lg text-gray-500">
           Already have an account?{" "}
-          <button
+          <button type="button"
             onClick={() => {
               dispatch(openModal({ mode: "login" }));
             }}
@@ -351,7 +357,7 @@ const Register = ({}) => {
           ></Button>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 
