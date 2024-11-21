@@ -71,9 +71,7 @@ const Register = ({}) => {
     },
     onError: (error: AxiosError<any>) => {
       console.log(error.response?.data);
-      toast.error(
-        error.response?.data?.message || "There was an error registering"
-      );
+      toast.error(error.response?.data?.message || "There was an error registering");
     },
   });
 
@@ -131,7 +129,7 @@ const Register = ({}) => {
           rules={{
             required: "User Type is required",
           }}
-          {...register("userType")}
+          name="userType"
           options={[
             { value: "Supplier", label: "Supplier" },
             { value: "Customer", label: "Customer" },
@@ -144,6 +142,7 @@ const Register = ({}) => {
 
         <ControlledInput
           type="text"
+          name="firstName"
           placeholder="First Name"
           errors={errors}
           register={register}
@@ -158,7 +157,6 @@ const Register = ({}) => {
               message: "First Name should be atleast 2 characters",
             },
           }}
-          {...register("firstName")}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -167,6 +165,7 @@ const Register = ({}) => {
 
         <ControlledInput
           type="text"
+          name="lastName"
           placeholder="Last Name"
           errors={errors}
           register={register}
@@ -181,7 +180,6 @@ const Register = ({}) => {
               message: "Last Name should be atleast 2 characters",
             },
           }}
-          {...register("lastName")}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -190,6 +188,7 @@ const Register = ({}) => {
 
         <ControlledInput
           type="tel"
+          name="phoneNumber"
           placeholder="Cell Number"
           mask={"+1(999)-999-9999"}
           errors={errors}
@@ -201,7 +200,6 @@ const Register = ({}) => {
               message: "Invalid Cell Number",
             },
           }}
-          {...register("phoneNumber")}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -210,6 +208,7 @@ const Register = ({}) => {
 
         <ControlledInput
           type="email"
+          name="email"
           placeholder="Email"
           errors={errors}
           register={register}
@@ -220,7 +219,6 @@ const Register = ({}) => {
               message: "Invalid email address",
             },
           }}
-          {...register("email")}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -229,19 +227,17 @@ const Register = ({}) => {
 
         <ControlledInput
           type="password"
+          name="password"
           placeholder="Password"
           errors={errors}
           register={register}
           rules={{
             required: "Password is required",
             pattern: {
-              value:
-                /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-              message:
-                "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+              value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              message: "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
             },
           }}
-          {...register("password")}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -250,15 +246,14 @@ const Register = ({}) => {
 
         <ControlledInput
           type="password"
+          name="confirmPassword"
           placeholder="Confirm Password"
           errors={errors}
           register={register}
           rules={{
             required: "Confirm Password is required",
-            validate: (value: string) =>
-              value === watch("password") || "Passwords do not match",
+            validate: (value: string) => value === watch("password") || "Passwords do not match",
           }}
-          {...register("confirmPassword")}
           classes={{
             input: "text-xl px-4 py-3",
           }}

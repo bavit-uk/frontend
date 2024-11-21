@@ -4,12 +4,7 @@
 
 import React, { ForwardRefRenderFunction, useState } from "react";
 import { cn } from "@/app/_utils/cn";
-import {
-  FieldErrors,
-  RegisterOptions,
-  UseFormRegister,
-  UseFormWatch,
-} from "react-hook-form";
+import { FieldErrors, RegisterOptions, UseFormRegister, UseFormWatch } from "react-hook-form";
 import InputMask from "@mona-health/react-input-mask";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -32,46 +27,32 @@ type ControlledInputProps = {
   mask?: string | (string | RegExp)[];
   label?: string;
   required?: boolean;
-  name: string;
   type?: string;
   icon?: React.ReactNode;
   onManualClick?: () => void;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-const ControlledInput: ForwardRefRenderFunction<
-  HTMLInputElement,
-  ControlledInputProps
-> = (
-  {
-    register,
-    errors,
-    classes,
-    onManualClick,
-    override = false,
-    rules,
-    mask = "",
-    label,
-    required,
-    icon,
-    ...props
-  },
-  ref
+const ControlledInput: ForwardRefRenderFunction<HTMLInputElement, ControlledInputProps> = (
+  { register, errors, classes, onManualClick, override = false, rules, mask = "", label, icon, ...props },
+  reff
 ) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  if (!props.name) {
+  if (!props.name || !register) {
     throw new Error("ControlledInput must have a name prop");
   }
 
   const { readOnly, ...rest } = props;
 
+  const { name, onBlur, onChange, ref, disabled, max, maxLength, min, minLength, pattern, required } = register(
+    props.name,
+    rules
+  );
+
   return (
     <div className={classes?.root || ""}>
       {label && (
-        <label
-          htmlFor={props.name}
-          className={cn("block text-sm font-light", classes?.label)}
-        >
+        <label htmlFor={props.name} className={cn("block text-sm font-light", classes?.label)}>
           {label}
           {label === "Exterior Color" || label === "Interior Color" ? (
             <span
@@ -85,18 +66,24 @@ const ControlledInput: ForwardRefRenderFunction<
         </label>
       )}
       <div className="relative">
-        {/* <InputMask
+        <InputMask
           mask={mask}
           readOnly={readOnly}
           value={props.value}
-          onBlur={props.onBlur}
-          disabled={props.disabled || false}
-          onChange={props.onChange}
-        > */}
-          {/* {(inputProps: React.JSX.IntrinsicAttributes & React.ClassAttributes<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement>) => ( */}
+          onBlur={onBlur}
+          disabled={disabled}
+          onChange={onChange}
+          ref={ref}
+        >
           <input
+            name={name}
+            max={max}
+            min={min}
+            maxLength={maxLength}
+            minLength={minLength}
+            pattern={pattern}
+            required={required}
             {...rest}
-            {...(register ? register(props.name, rules) : {})}
             className={cn(
               override
                 ? ""
@@ -106,13 +93,9 @@ const ControlledInput: ForwardRefRenderFunction<
               props.type === "password" && "pr-10",
               icon && "pr-14"
             )}
-            type={
-              props.type === "password" && showPassword ? "text" : props.type
-            }
-            ref={ref}
+            type={props.type === "password" && showPassword ? "text" : props.type}
           />
-          {/* )} */}
-        {/* </InputMask> */}
+        </InputMask>
         {props.type === "password" && (
           <button
             type="button"
@@ -125,9 +108,7 @@ const ControlledInput: ForwardRefRenderFunction<
         )}
       </div>
       {props.name && errors && errors[props.name] && (
-        <span className={cn("text-xs text-red-500", classes?.error)}>
-          {errors[props.name]?.message?.toString()}
-        </span>
+        <span className={cn("text-xs text-red-500", classes?.error)}>{errors[props.name]?.message?.toString()}</span>
       )}
     </div>
   );
