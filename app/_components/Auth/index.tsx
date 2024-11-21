@@ -7,10 +7,11 @@ import {
   Transition,
   TransitionChild,
 } from '@headlessui/react';
-import { useAppSelector } from '../_lib/hooks';
+import { useAppDispatch, useAppSelector } from '../_lib/hooks';
 import Login from './Login';
 import Register from './Register';
-// import { closeModal } from '../_lib/features/auth/authSlice';
+
+import { closeModal } from '../_lib/features/auth/authSlice';
 import Image from 'next/image';
 
 const AuthModal = ({}) => {
@@ -18,11 +19,11 @@ const AuthModal = ({}) => {
   const mode = useAppSelector((state) => state.authModal.mode);
   const title = useAppSelector((state) => state.authModal.title);
   const message = useAppSelector((state) => state.authModal.message);
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-  // const close = () => {
-  //   dispatch(closeModal());
-  // };
+  const close = () => {
+    dispatch(closeModal());
+  };
 
   return (
     <Transition appear show={isOpen}>

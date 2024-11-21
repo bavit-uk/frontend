@@ -22,7 +22,7 @@ export const calcPayments = (
   interestRate = 0,
 ) => {
   // Calculating the sales tax on the new vehicle
-  let tax = (salesTaxRate / 100) * (newCarPrice - tradeInAllowance);
+  const tax = (salesTaxRate / 100) * (newCarPrice - tradeInAllowance);
 
   // Calculating the principal
   // Principal is the amount of money you are borrowing from the bank
@@ -33,14 +33,14 @@ export const calcPayments = (
   principal = Math.round(principal * 100) / 100.0;
 
   // Sales tax on the new vehicle minus the sales tax on the trade-in vehicle
-  let saleTaxOfNewVehicle = (salesTaxRate / 100) * newCarPrice;
-  let saleTaxOfTradeInVehicle = (salesTaxRate / 100) * tradeInAllowance;
+  const saleTaxOfNewVehicle = (salesTaxRate / 100) * newCarPrice;
+  const saleTaxOfTradeInVehicle = (salesTaxRate / 100) * tradeInAllowance;
 
-  let saleText = saleTaxOfNewVehicle - saleTaxOfTradeInVehicle;
+  const saleText = saleTaxOfNewVehicle - saleTaxOfTradeInVehicle;
 
-  let totalAmount = newCarPrice - downPaymentAndRebates + tradeInLoanBalance - tradeInAllowance + saleText;
+  const totalAmount = newCarPrice - downPaymentAndRebates + tradeInLoanBalance - tradeInAllowance + saleText;
 
-  let ret = [];
+  const ret = [];
   ret.push(calculateLoanPayments(principal, interestRate, 12, loanDuration | 0, "Monthly"));
   ret.push(
     calculateLoanPayments(principal, interestRate, 26, Math.ceil(loanDuration * 2.1666666666666682), "Bi-Weekly"),

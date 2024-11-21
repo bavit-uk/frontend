@@ -85,32 +85,34 @@ const ControlledInput: ForwardRefRenderFunction<
         </label>
       )}
       <div className="relative">
-        <InputMask
+        {/* <InputMask
           mask={mask}
           readOnly={readOnly}
-          value={props.value || ''}
+          value={props.value}
           onBlur={props.onBlur}
           disabled={props.disabled || false}
           onChange={props.onChange}
-        >
+        > */}
           {/* {(inputProps: React.JSX.IntrinsicAttributes & React.ClassAttributes<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement>) => ( */}
-            <input
-              {...rest}
-              {...(register ? register(props.name, rules) : {})}
-              className={cn(
-                override
-                  ? ""
-                  : "focus:border-primary focus:ring-primary w-full rounded-md border border-gray-300 p-2 font-light focus:outline-none focus:ring-1",
-                readOnly ? "cursor-not-allowed select-none bg-gray-100" : "",
-                classes?.input,
-                props.type === "password" && "pr-10",
-                icon && "pr-14"
-              )}
-              type={props.type === "password" && showPassword ? "text" : props.type}
-              ref={ref}
-            />
+          <input
+            {...rest}
+            {...(register ? register(props.name, rules) : {})}
+            className={cn(
+              override
+                ? ""
+                : "focus:border-primary focus:ring-primary w-full rounded-md border border-gray-300 p-2 font-light focus:outline-none focus:ring-1",
+              readOnly ? "cursor-not-allowed select-none bg-gray-100" : "",
+              classes?.input,
+              props.type === "password" && "pr-10",
+              icon && "pr-14"
+            )}
+            type={
+              props.type === "password" && showPassword ? "text" : props.type
+            }
+            ref={ref}
+          />
           {/* )} */}
-        </InputMask>
+        {/* </InputMask> */}
         {props.type === "password" && (
           <button
             type="button"

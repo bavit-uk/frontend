@@ -1,6 +1,6 @@
 "use select";
 
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
   Listbox,
   ListboxButton,
@@ -12,25 +12,19 @@ import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/app/_utils/cn";
 
 type Props = {
-  size?: String;
+  size?: string;
   classes?: {
-    input?: String | String[];
-    options?: String | String[];
-    option?: String | String[];
-    wrapper?: String | String[];
+    input?: string | string[];
+    options?: string | string[];
+    option?: string | string[];
+    wrapper?: string | string[];
   };
   data: FormTypes.FormValues.SelectOption[];
   value: FormTypes.FormValues.SelectOption;
   onChange: (value: FormTypes.FormValues.SelectOption) => void;
 };
 
-export default function Select({
-  size = "md",
-  classes,
-  data,
-  value,
-  onChange,
-}: Props) {
+export default function Select({ classes, data, value, onChange }: Props) {
   return (
     <div className="w-full">
       <Listbox
@@ -43,7 +37,7 @@ export default function Select({
           <ListboxButton
             className={cn(
               "relative w-full cursor-pointer rounded-lg bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-300 sm:text-sm",
-              classes?.input,
+              classes?.input
             )}
           >
             <span className="block truncate w-full">{value?.label}</span>
@@ -63,7 +57,7 @@ export default function Select({
             <ListboxOptions
               className={cn(
                 "absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm ",
-                classes?.options,
+                classes?.options
               )}
             >
               {data.map((item, personIdx) => (
@@ -74,7 +68,7 @@ export default function Select({
                       "relative cursor-pointer select-none py-2 pl-10 pr-4 text-gray-900 ",
                       active ? "bg-amber-100 text-amber-900" : "text-gray-900",
                       classes?.option,
-                      item.disabled && "text-gray-400",
+                      item.disabled && "text-gray-400"
                     )
                   }
                   disabled={item.disabled || false}

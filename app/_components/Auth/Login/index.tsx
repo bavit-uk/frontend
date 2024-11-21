@@ -5,7 +5,7 @@
 import ControlledInput from '../../Forms/ControlledInput';
 import { closeModal, openModal } from '../../_lib/features/auth/authSlice';
 import { useAppDispatch } from '../../_lib/hooks';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 // import GoogleLogo from '@assets/Icons/google.webp';
@@ -15,7 +15,7 @@ import { client } from '@/app/_utils/axios';
 import { AxiosError } from 'axios';
 import { setUser } from '../../_lib/features/user/userSlice';
 import { toast } from 'react-toastify';
-import { useGoogleLogin } from '@react-oauth/google';
+// import { useGoogleLogin } from '@react-oauth/google';
 import { useRouter } from 'next/navigation';
 
 type Inputs = {
@@ -46,27 +46,27 @@ const Login = ({}) => {
     dispatch(closeModal());
   };
 
-  const googleLogin = useGoogleLogin({
-    flow: 'auth-code',
-    onSuccess: async (codeResponse) => {
-      const response = await client.post('/auth/signin-with-google', {
-        credentials: 'customHooks',
-        code: codeResponse.code,
-      });
+  // const googleLogin = useGoogleLogin({
+  //   flow: 'auth-code',
+  //   onSuccess: async (codeResponse) => {
+  //     const response = await client.post('/auth/signin-with-google', {
+  //       credentials: 'customHooks',
+  //       code: codeResponse.code,
+  //     });
 
-      const user = response.data.data;
-      dispatch(
-        setUser({
-          user: user,
-          persist: getValues().rememberMe,
-          mode: 'login',
-        })
-      );
-      toast.success('Logged in successfully');
-      dispatch(closeModal());
-    },
-    onError: (errorResponse) => console.log(errorResponse),
-  });
+  //     const user = response.data.data;
+  //     dispatch(
+  //       setUser({
+  //         user: user,
+  //         persist: getValues().rememberMe,
+  //         mode: 'login',
+  //       })
+  //     );
+  //     toast.success('Logged in successfully');
+  //     dispatch(closeModal());
+  //   },
+  //   onError: (errorResponse) => console.log(errorResponse),
+  // });
 
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
@@ -188,7 +188,7 @@ const Login = ({}) => {
       <button
         type='button'
         className='mx-auto flex items-center justify-center gap-4 rounded-md border border-gray-600/50 px-8 py-2'
-        onClick={() => googleLogin()}
+        // onClick={() => googleLogin()}
       >
         {/* <Image src={GoogleLogo} alt='Google Logo' width={48} height={48} /> */}
         <p className='text-xl text-gray-600'>Sign in with Google</p>

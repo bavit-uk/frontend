@@ -1,3 +1,8 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+type NestedRecord = Record<string, any>;
+
 const convertKey = (key: string): string => {
   return key
     .split(".")
@@ -7,25 +12,29 @@ const convertKey = (key: string): string => {
     .trim();
 };
 
-export const flattenObject = (obj: Record<string, any>, parentKey = ""): Record<string, any> => {
-  let flatObject: Record<string, any> = {};
+export const flattenObject = (
+  obj: NestedRecord,
+  parentKey = ""
+): Record<string, any> => {
+  const flatObject: Record<string, any> = {};
 
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      if (key === "id" || key === "_id") continue;
+  Object.entries(obj).forEach(([key, value]) => {
+    if (key === "id" || key === "_id") return;
 
-      let newKey = parentKey ? `${parentKey} ${convertKey(key)}` : convertKey(key);
-      if (typeof obj[key] === "object" && obj[key] !== null) {
-        Object.assign(flatObject, flattenObject(obj[key], newKey));
-      } else {
-        if (key === "createdAt" || key === "updatedAt") {
-          flatObject[newKey] = new Date(obj[key]);
-        } else {
-          flatObject[newKey] = obj[key];
-        }
-      }
+    const newKey = parentKey
+      ? `${parentKey} ${convertKey(key)}`
+      : convertKey(key);
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      !(value instanceof Date)
+    ) {
+      Object.assign(flatObject, flattenObject(value, newKey));
+    } else {
+      flatObject[newKey] =
+        key === "createdAt" || key === "updatedAt" ? new Date(value) : value;
     }
-  }
+  });
 
   return flatObject;
 };

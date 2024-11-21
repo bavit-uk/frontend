@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { useQuery } from "@tanstack/react-query";
-import { client } from "@utils/axios";
 
-const token = "";
-const ttl = "";
+// const token = "";
+// const ttl = "";
 
 const initialState = {
   user: {
@@ -37,7 +36,11 @@ export const filterSlice = createSlice({
         } else {
           return initialState;
         }
-      } else if (action.payload.mode === "login" && action.payload.user.token && action.payload.persist) {
+      } else if (
+        action.payload.mode === "login" &&
+        action.payload.user.token &&
+        action.payload.persist
+      ) {
         const maxAge = 60 * 60 * 24 * 30;
         const expires = new Date().getTime() + maxAge * 1000;
         localStorage.setItem("token", action.payload.user.token);

@@ -9,16 +9,16 @@ import {
   ComboboxOptions,
   Transition,
 } from "@headlessui/react";
-import { Check, ChevronUp } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import { cn } from "@/app/_utils/cn";
 
 type Props = {
-  size: String;
+  size: string;
   classes?: {
-    wrapper?: String[];
-    input?: String[];
-    options?: String[];
-    option?: String[];
+    wrapper?: string[];
+    input?: string[];
+    options?: string[];
+    option?: string[];
   };
   data: FormTypes.FormValues.SelectOption[];
   value: FormTypes.FormValues.SelectOption;
@@ -107,7 +107,7 @@ const SearchableSelect = ({ size, classes = {}, data = [], value, onChange, plac
                   value={dataItem}
                   disabled={dataItem?.disabled}
                 >
-                  {({ selected, active }) => (
+                  {({ selected }) => (
                     <>
                       <span
                         className={cn(

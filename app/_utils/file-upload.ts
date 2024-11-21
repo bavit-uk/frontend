@@ -10,7 +10,10 @@ type FileInput = {
 };
 
 // File upload function
-export const uploadImage = async (file: FileInput | File | string | null, folderName: string) => {
+export const uploadImage = async (
+  file: FileInput | File | string | null,
+  folderName: string
+) => {
   if (!file) {
     return null;
   }
@@ -38,7 +41,10 @@ export const uploadImage = async (file: FileInput | File | string | null, folder
 // Upload multiple images
 type FileInputArray = (FileInput | File | string)[] | null;
 
-export const uploadAllImages = async (files: (File | string)[], folderName: string) => {
+export const uploadAllImages = async (
+  files: (File | string)[],
+  folderName: string
+) => {
   if (!files || files.length === 0) {
     return [];
   }
@@ -50,13 +56,16 @@ export const uploadAllImages = async (files: (File | string)[], folderName: stri
       if (url) {
         urls.push(url);
       }
-    }),
+    })
   ).then(() => {
     return urls;
   });
 };
 
-export const uploadMultipleImages = async (files: FileInputArray, folderName: string) => {
+export const uploadMultipleImages = async (
+  files: FileInputArray,
+  folderName: string
+) => {
   if (!files || files.length === 0) {
     return [];
   }
@@ -71,12 +80,15 @@ export const uploadMultipleImages = async (files: FileInputArray, folderName: st
       } else if (typeof file === "object" && "file" in file) {
         // Extract the File object from the FileInput type
         const fileObj = file.file;
-        const storageRef = ref(storage, `${folderName}/${uuidv4()}-${fileObj.name}`);
+        const storageRef = ref(
+          storage,
+          `${folderName}/${uuidv4()}-${fileObj.name}`
+        );
         const snapshot = await uploadBytes(storageRef, fileObj);
         const url = await getDownloadURL(snapshot.ref);
         urls.push(url);
       }
-    }),
+    })
   ).then(() => {
     return urls;
   });

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -25,9 +26,14 @@ export const authModalSlice = createSlice({
         mode: "login" | "register";
         title?: string;
         message?: string;
-      }>,
+      }>
     ) => {
-      return { opened: true, mode: action.payload.mode, title: action.payload.title, message: action.payload.message };
+      return {
+        opened: true,
+        mode: action.payload.mode,
+        title: action.payload.title,
+        message: action.payload.message,
+      };
     },
     closeModal: (state) => {
       return { opened: false, mode: "login", title: "", message: "" };

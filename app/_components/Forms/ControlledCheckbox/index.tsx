@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Star } from "lucide-react";
-import { useState } from "react";
+
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 type Classes = {
   root?: string;
@@ -30,7 +30,10 @@ type FormControlledCheckbox = {
 
 type CheckboxProps = StateControlCheckbox | FormControlledCheckbox;
 
-const ControlledCheckbox: React.FC<CheckboxProps> = ({ readOnly = false, ...props }) => {
+const ControlledCheckbox: React.FC<CheckboxProps> = ({
+  readOnly = false,
+  ...props
+}) => {
   if (props.isFormControlled === true) {
     const { name, classes, setValue, watch, label } = props;
     return (
@@ -56,14 +59,20 @@ const ControlledCheckbox: React.FC<CheckboxProps> = ({ readOnly = false, ...prop
   return (
     <>
       <div className={`form-control ${classes?.root}`}>
-        <label className={`label flex cursor-pointer flex-row justify-start gap-2 ${classes?.labelCheckboxContainer}`}>
+        <label
+          className={`label flex cursor-pointer flex-row justify-start gap-2 ${classes?.labelCheckboxContainer}`}
+        >
+          {/* Ensure the input change handler is clearly defined as a function */}
           <input
             type="checkbox"
             className={`toggle toggle-success ${classes?.checkbox}`}
             checked={value}
             disabled={readOnly}
             onChange={(e) => {
-              setValue && setValue(e?.target?.checked);
+              // Explicitly handle the condition when setValue is available
+              if (setValue) {
+                setValue(e?.target?.checked);
+              }
             }}
           />
           <span className={`label-text ${classes?.label}`}>{label}</span>
