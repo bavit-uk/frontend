@@ -66,12 +66,12 @@ const Register = ({}) => {
       toast.success('You have successfully registered');
       dispatch(openModal({ mode: 'login' }));
     },
-    onError: (error: AxiosError<any>) => {
-      console.log(error.response?.data);
-      toast.error(
-        error.response?.data?.message || 'There was an error registering'
-      );
-    },
+    // onError: (error: AxiosError<any>) => {
+    //   console.log(error.response?.data);
+    //   toast.error(
+    //     error.response?.data?.message || 'There was an error registering'
+    //   );
+    // },
   });
 
   // const googleSignup = useGoogleLogin({
@@ -86,35 +86,35 @@ const Register = ({}) => {
   //   },
   // });
 
-  const handleSignupWithGoogle = useMutation({
-    mutationFn: async () => {
-      return client.post('/auth/signup-with-google', {
-        code: googleToken,
-        credentials: 'customHooks',
-        // userType: userType,
-        userType: 'Admin',
-      });
-    },
-    onSuccess: (response) => {
-      toast.success(response.data.message);
-      setIsUserTypeModalOpen(false);
-    },
-    onError: (error: any) => {
-      console.log(error);
-      toast.error(
-        error.response.data.message || 'Failed to signin with google.'
-      );
-    },
-  });
+  // const handleSignupWithGoogle = useMutation({
+  //   mutationFn: async () => {
+  //     return client.post('/auth/signup-with-google', {
+  //       code: googleToken,
+  //       credentials: 'customHooks',
+  //       // userType: userType,
+  //       userType: 'Admin',
+  //     });
+  //   },
+  //   onSuccess: (response) => {
+  //     toast.success(response.data.message);
+  //     setIsUserTypeModalOpen(false);
+  //   },
+  //   onError: (error: any) => {
+  //     console.log(error);
+  //     toast.error(
+  //       error.response.data.message || 'Failed to signin with google.'
+  //     );
+  //   },
+  // });
 
   return (
     <>
       <form
-        className='mt-4 space-y-2'
+        className='mt-4 space-y-2 mt-4 space-y-4 px-4 py-6 bg-white shadow-md rounded-lg'
         onSubmit={handleSubmit((data) => onSubmit.mutate(data))}
         noValidate
       >
-        {onSubmit.isPending && <Loader />}
+        {/* {onSubmit.isPending && <Loader />} */}
         <ControlledSelect
           errors={errors}
           register={register}
@@ -257,7 +257,7 @@ const Register = ({}) => {
 
         <button
           className='bg-primary w-full rounded-md px-6 py-4 text-xl font-medium text-white'
-          onClick={close}
+          // onClick={close}
           type='submit'
         >
           Sign Up
@@ -276,16 +276,16 @@ const Register = ({}) => {
           className='mx-auto flex items-center justify-center gap-4 rounded-md border border-gray-600/50 px-8 py-2'
           // onClick={() => googleSignup()}
         >
-          <Image src={GoogleLogo} alt='Google Logo' width={48} height={48} />
+          {/* <Image src={GoogleLogo} alt='Google Logo' width={48} height={48} /> */}
           <p className='text-xl text-gray-600'>Sign Up with Google</p>
         </button>
 
         <p className='text-center text-lg text-gray-500'>
           Already have an account?{' '}
           <button
-            onClick={() => {
-              dispatch(openModal({ mode: 'login' }));
-            }}
+            // onClick={() => {
+            //   dispatch(openModal({ mode: 'login' }));
+            // }}
             className='text-primary hover:underline'
           >
             Login Here
@@ -338,9 +338,9 @@ const Register = ({}) => {
           label='Cancel'
         ></Button>
         <Button
-          onClick={() => {
-            handleSignupWithGoogle.mutate();
-          }}
+          // onClick={() => {
+          //   handleSignupWithGoogle.mutate();
+          // }}
           label='Register'
           className='flex-1'
         ></Button>

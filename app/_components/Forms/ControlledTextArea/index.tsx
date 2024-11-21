@@ -1,9 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { cn } from "@utils/cn";
+import { cn } from "@/app/_utils/cn";
 import React, { ForwardRefRenderFunction } from "react";
-import { FieldErrors, RegisterOptions, UseFormRegister, UseFormWatch } from "react-hook-form";
-import InputMask from "react-input-mask";
+import {
+  FieldErrors,
+  RegisterOptions,
+  UseFormRegister,
+  UseFormWatch,
+} from "react-hook-form";
+
 type Classes = {
   root?: string;
   textarea?: string;
@@ -23,15 +29,31 @@ type ControlledTextAreaProps = {
   required?: boolean;
 } & React.InputHTMLAttributes<HTMLTextAreaElement>;
 
-const ControlledTextArea: ForwardRefRenderFunction<HTMLTextAreaElement, ControlledTextAreaProps> = (
-  { register, errors, watch, classes, override = false, rules, label, required, ...props },
-  ref,
+const ControlledTextArea: ForwardRefRenderFunction<
+  HTMLTextAreaElement,
+  ControlledTextAreaProps
+> = (
+  {
+    register,
+    errors,
+
+    classes,
+    override = false,
+    rules,
+    label,
+    required,
+    ...props
+  },
+  ref
 ) => {
   if (!props.name) throw new Error("ControlledInput must have a name prop");
   return (
     <div className={classes?.root || ""}>
       {label && (
-        <label htmlFor={props.name} className={cn("block text-sm font-light", classes?.label)}>
+        <label
+          htmlFor={props.name}
+          className={cn("block text-sm font-light", classes?.label)}
+        >
           {label}
           {required && <span className="ml-1 text-red-500">*</span>}
         </label>
@@ -43,16 +65,19 @@ const ControlledTextArea: ForwardRefRenderFunction<HTMLTextAreaElement, Controll
           override
             ? ""
             : "w-full rounded-md border border-gray-300 p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary",
-          classes?.textarea,
+          classes?.textarea
         )}
         ref={ref}
         rows={props?.rows || 4}
       />
-      {props.name && errors && errors[props.name] && errors[props.name]?.message && (
-        <span className={`text-xs font-light text-red-500 ${classes?.error}`}>
-          {errors[props.name]?.message?.toString()}
-        </span>
-      )}
+      {props.name &&
+        errors &&
+        errors[props.name] &&
+        errors[props.name]?.message && (
+          <span className={`text-xs font-light text-red-500 ${classes?.error}`}>
+            {errors[props.name]?.message?.toString()}
+          </span>
+        )}
     </div>
   );
 };

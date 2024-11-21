@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
+"use client";
 
-import { cn } from '@/app/_utils/cn';
-import React, { ForwardRefRenderFunction } from 'react';
+import React, { ForwardRefRenderFunction, useState } from "react";
+import { cn } from "@/app/_utils/cn";
 import {
   FieldErrors,
   RegisterOptions,
   UseFormRegister,
   UseFormWatch,
-} from 'react-hook-form';
-import InputMask from 'react-input-mask';
-
-import { Eye, EyeOff } from 'lucide-react';
+} from "react-hook-form";
+import InputMask from "@mona-health/react-input-mask";
+import { Eye, EyeOff } from "lucide-react";
 
 type Classes = {
   root?: string;
@@ -50,7 +49,7 @@ const ControlledInput: ForwardRefRenderFunction<
     onManualClick,
     override = false,
     rules,
-    mask = '',
+    mask = "",
     label,
     required,
     icon,
@@ -58,78 +57,76 @@ const ControlledInput: ForwardRefRenderFunction<
   },
   ref
 ) => {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  if (!props.name) throw new Error('ControlledInput must have a name prop');
+  if (!props.name) {
+    throw new Error("ControlledInput must have a name prop");
+  }
 
   const { readOnly, ...rest } = props;
 
   return (
-    <div className={classes?.root || ''}>
+    <div className={classes?.root || ""}>
       {label && (
         <label
           htmlFor={props.name}
-          className={cn('block text-sm font-light', classes?.label)}
+          className={cn("block text-sm font-light", classes?.label)}
         >
           {label}
-          {label === 'Exterior Color' && (
+          {label === "Exterior Color" || label === "Interior Color" ? (
             <span
               onClick={onManualClick}
-              className='ml-1 cursor-pointer rounded bg-orange-300 p-1 text-xs text-orange-600'
+              className="ml-1 cursor-pointer rounded bg-orange-300 p-1 text-xs text-orange-600"
             >
               Manual
             </span>
-          )}
-          {label === 'Interior Color' && (
-            <span
-              onClick={onManualClick}
-              className='ml-1 cursor-pointer rounded bg-orange-300 p-1 text-xs text-orange-600'
-            >
-              Manual
-            </span>
-          )}
-          {required && <span className='ml-1 text-red-500'>*</span>}
+          ) : null}
+          {required && <span className="ml-1 text-red-500">*</span>}
         </label>
       )}
-      <div className='relative'>
+      <div className="relative">
         <InputMask
           mask={mask}
           readOnly={readOnly}
-          value={props.value}
+          value={props.value || ''}
           onBlur={props.onBlur}
-          disabled={props.disabled}
+          disabled={props.disabled || false}
+          onChange={props.onChange}
         >
-          {(inputProps) => (
+          {/* {(inputProps: React.JSX.IntrinsicAttributes & React.ClassAttributes<HTMLInputElement> & React.InputHTMLAttributes<HTMLInputElement>) => ( */}
             <input
-              {...inputProps} // Spread the inputProps here
               {...rest}
               {...(register ? register(props.name, rules) : {})}
               className={cn(
                 override
-                  ? ''
-                  : 'focus:border-primary focus:ring-primary w-full rounded-md border border-gray-300 p-2 font-light focus:outline-none focus:ring-1',
-                readOnly ? 'cursor-not-allowed select-none bg-gray-100' : '',
+                  ? ""
+                  : "focus:border-primary focus:ring-primary w-full rounded-md border border-gray-300 p-2 font-light focus:outline-none focus:ring-1",
+                readOnly ? "cursor-not-allowed select-none bg-gray-100" : "",
                 classes?.input,
-                props.type === 'password' && 'pr-10',
-                icon && 'pr-14'
+                props.type === "password" && "pr-10",
+                icon && "pr-14"
               )}
-              type={
-                props.type === 'password' && showPassword ? 'text' : props.type
-              }
+              type={props.type === "password" && showPassword ? "text" : props.type}
               ref={ref}
             />
-          )}
+          {/* )} */}
         </InputMask>
-      </div>
-
-      {props.name &&
-        errors &&
-        errors[props.name] &&
-        errors[props.name]?.message && (
-          <span className={cn('text-xs text-red-500', classes?.error)}>
-            {errors[props.name]?.message?.toString()}
-          </span>
+        {props.type === "password" && (
+          <button
+            type="button"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+            onClick={() => setShowPassword(!showPassword)}
+            aria-label="Toggle password visibility"
+          >
+            {showPassword ? <EyeOff size="24" /> : <Eye size="24" />}
+          </button>
         )}
+      </div>
+      {props.name && errors && errors[props.name] && (
+        <span className={cn("text-xs text-red-500", classes?.error)}>
+          {errors[props.name]?.message?.toString()}
+        </span>
+      )}
     </div>
   );
 };
