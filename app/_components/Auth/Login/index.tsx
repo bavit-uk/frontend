@@ -17,6 +17,7 @@ import { setUser } from "../../_lib/features/user/userSlice";
 import { toast } from "react-toastify";
 // import { useGoogleLogin } from '@react-oauth/google';
 import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 type Inputs = {
   email: string;
@@ -48,7 +49,7 @@ const handleForgetPassword=()=>{
 const handleRegister=()=>{
   router.push('./register')
 }
-
+console.log(handleRegister)
 
   // const googleLogin = useGoogleLogin({
   //   flow: 'auth-code',
