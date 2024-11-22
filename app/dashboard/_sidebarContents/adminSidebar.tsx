@@ -10,12 +10,13 @@ interface NavItem {
 export const adminsidebar: NavItem[] = [
     { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
     {
-        title: "User Management",
+        title: "Supplier Management",
         icon: Users,
         href: "/users",
         children: [
-            { title: "Add User", icon: Users, href: "/users/add" },
-            { title: "User List", icon: Users, href: "/users/list" },
+            { title: "Add Supplier", icon: Users, href: "/dashboard/suplier_management/add_supplier" },
+            { title: "Supplier List", icon: Users, href: "/dashboard/suplier_management/suplier_list" },
+            { title: " Add Supplier Categories", icon: Users, href: "/dashboard/suplier_management/add-supplier-categories" },
         ],
     },
     { title: "View Dealerships", icon: Building2, href: "/dealerships" },
