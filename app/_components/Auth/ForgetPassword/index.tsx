@@ -45,38 +45,40 @@ const ForgetPassword = () => {
   };
 
   return (
-    <form
-      className="mt-4 space-y-4 px-4"
-      onSubmit={handleSubmit(handleFormSubmit)}
-      noValidate
-    >
-      <h3 className="text-xl font-bold">Forget Password</h3>
-      <ControlledInput
-        type="email"
-        placeholder="Enter your email"
-        errors={errors}
-        register={register}
-        rules={{
-          required: "Email is required",
-          pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "Invalid email address",
-          },
-        }}
-        name="email"
-        classes={{
-          input: "text-xl p-4",
-        }}
-        required
-      />
-
-      <button
-        className="w-full rounded-md bg-primary px-6 py-4 text-xl font-medium text-white"
-        type="submit"
+    <div className="bg-gray-200 p-8 h-screen">
+      <form
+        className=" space-y-2 my-4 w-1/2 mx-auto space-y-4 px-4 py-6 bg-white shadow-md rounded-lg"
+        onSubmit={handleSubmit(handleFormSubmit)}
+        noValidate
       >
-        Send Reset Link
-      </button>
-    </form>
+        <h3 className="text-xl font-bold">Forget Password</h3>
+        <ControlledInput
+          type="email"
+          placeholder="Enter your email"
+          errors={errors}
+          register={register}
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Invalid email address",
+            },
+          }}
+          name="email"
+          classes={{
+            input: "text-xl p-4",
+          }}
+          required
+        />
+
+        <button
+          className="w-full rounded-md bg-red-500 px-6 py-4 text-xl font-medium text-white"
+          type="submit"
+        >
+          Send Reset Link
+        </button>
+      </form>
+    </div>
   );
 };
 

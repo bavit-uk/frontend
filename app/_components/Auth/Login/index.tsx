@@ -41,10 +41,14 @@ const Login = ({}) => {
       rememberMe: true,
     },
   });
+const handleForgetPassword=()=>{
+  router.push('./forget-password')
+}
 
-  const handleCloseModal = () => {
-    dispatch(closeModal());
-  };
+const handleRegister=()=>{
+  router.push('./register')
+}
+
 
   // const googleLogin = useGoogleLogin({
   //   flow: 'auth-code',
@@ -148,7 +152,8 @@ const Login = ({}) => {
         />
 
         <button
-          className="bg-red-400 w-full rounded-md px-6 py-4 text-xl font-medium text-white"
+
+          className="bg-red-500 w-full rounded-md px-6 py-4 text-xl font-medium text-white"
           type="submit"
         >
           Login
@@ -170,13 +175,13 @@ const Login = ({}) => {
             </label>
           </div>
 
-          <Link
-            onClick={handleCloseModal}
-            href="/Forgot-password"
-            className="text-primary cursor-pointer text-xl hover:underline"
+          <button
+            onClick={handleForgetPassword}
+
+            className="text-primary text-blue-500 cursor-pointer text-xl hover:underline"
           >
             Forgot password?
-          </Link>
+          </button>
         </div>
         <Divider
           label="or"
@@ -200,9 +205,9 @@ const Login = ({}) => {
           <button
             type="button"
             onClick={() => {
-              dispatch(openModal({ mode: "register" }));
+              handleRegister()
             }}
-            className="text-primary hover:underline"
+            className="text-primary text-blue-500 hover:underline"
           >
             Register Here
           </button>

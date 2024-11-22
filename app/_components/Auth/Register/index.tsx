@@ -15,7 +15,7 @@ import { client } from "../../../_utils/axios";
 import { AxiosError } from "axios";
 import Loader from "../../Loader";
 // import { useGoogleLogin } from '@react-oauth/google';
-import { auth,googleProvider } from "../../../_utils/firebase";
+import { auth, googleProvider } from "../../../_utils/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useAppDispatch } from "../../_lib/hooks";
 import { toast } from "react-toastify";
@@ -23,7 +23,8 @@ import Modal from "../../ui/Modal";
 import { useState } from "react";
 import Button from "../../ui/Button";
 import { clearFilter } from "../../_lib/features/homepage/filterSlice";
-
+import Login from "../Login";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   // userType: "Supplier" | "Customer";
@@ -32,7 +33,6 @@ type Inputs = {
   phoneNumber: string;
   email: string;
   password: string;
-
 };
 
 // type GoogleTokenType = {
@@ -43,6 +43,7 @@ type Inputs = {
 // };
 
 const Register = ({}) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [googleToken, setGoogleToken] = useState<string | null>(null);
   const [isUserTypeModalOpen, setIsUserTypeModalOpen] = useState(false);
@@ -56,28 +57,32 @@ const Register = ({}) => {
   } = useForm<Inputs>({
     reValidateMode: "onChange",
   });
-
+  const handleLogin = () => {
+    router.push("/login");
+  };
   const close = () => {
     dispatch(closeModal());
   };
-console.log("getvalues",getValues())
-console.log("errors",errors)
- const onSubmit = useMutation({
+  console.log("getvalues", getValues());
+  console.log("errors", errors);
+  const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
-      console.log("before sending req",data)
+      console.log("before sending req", data);
       data.email = data.email.toLowerCase();
       // data.userType = "Customer";
       const response = await client.post("/auth/register", data);
       return response.data.data;
     },
-    
+
     onSuccess: (data, inputs) => {
       toast.success("You have successfully registered");
       dispatch(openModal({ mode: "login" }));
     },
     onError: (error: AxiosError<any>) => {
       console.log(error.response?.data);
-      toast.error(error.response?.data?.message || "There was an error registering");
+      toast.error(
+        error.response?.data?.message || "There was an error registering"
+      );
     },
   });
 
@@ -240,8 +245,10 @@ console.log("errors",errors)
           rules={{
             required: "Password is required",
             pattern: {
-              value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-              message: "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+              value:
+                /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              message:
+                "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
             },
           }}
           classes={{
@@ -267,7 +274,7 @@ console.log("errors",errors)
         /> */}
 
         <button
-          className="bg-red-400 w-full rounded-md px-6 py-4 text-xl font-medium text-white"
+          className="bg-red-500 w-full rounded-md px-6 py-4 text-xl font-medium text-white"
           onClick={close}
           type="submit"
         >
@@ -293,11 +300,12 @@ console.log("errors",errors)
 
         <p className="text-center text-lg text-gray-500">
           Already have an account?{" "}
-          <button type="button"
+          <button
+            type="button"
             onClick={() => {
-              dispatch(openModal({ mode: "login" }));
+              handleLogin();
             }}
-            className="text-primary hover:underline"
+            className="text-primary text-blue-500 hover:underline"
           >
             Login Here
           </button>

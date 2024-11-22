@@ -41,8 +41,10 @@ const ResetPassword = () => {
   });
 
   return (
+    <div className="bg-gray-200 p-8 h-screen">
     <form
-      className="space-y-4 px-4"
+        className=" space-y-2 my-4 w-1/2 mx-auto space-y-4 px-4 py-6 bg-white shadow-md rounded-lg"
+
       onSubmit={handleSubmit((data) => onSubmit.mutate(data))}
       noValidate
     >
@@ -84,12 +86,13 @@ const ResetPassword = () => {
       />
 
       <button
-        className="w-full rounded-md bg-primary px-6 py-4 text-xl font-medium text-white"
+        className="w-full rounded-md bg-red-500 px-6 py-4 text-xl font-medium text-white"
         type="submit"
       >
         Reset Password
       </button>
     </form>
+    </div>
   );
 };
 
