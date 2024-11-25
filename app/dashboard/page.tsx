@@ -1,9 +1,9 @@
-import Image from "next/image";
+
 
 export default function Home() {
     return (
         <>  
-        <h1 className="">Dashboard Page</h1>
+        <h1 className="w-full">Dashboard Page</h1>
         </>
     );
 }
