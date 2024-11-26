@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Building2, Car, Globe, Wrench, Shield, Target, ShoppingCart, Landmark, Wallet, Calculator, MessageSquare,  } from "lucide-react";
+import { LayoutDashboard, Users, Building2, Car, Globe, Wrench, Shield, Target, ShoppingCart, Landmark, Wallet, Calculator, MessageSquare, Settings  } from "lucide-react";
 
 interface NavItem {
     title: string;
@@ -12,11 +12,11 @@ export const adminsidebar: NavItem[] = [
     {
         title: "Supplier Management",
         icon: Users,
-        href: "/users",
+        href: "/supliermanagement",
         children: [
-            { title: "Add Supplier", icon: Users, href: "/dashboard/suplier_management/add_supplier" },
-            { title: "Supplier List", icon: Users, href: "/dashboard/suplier_management/suplier_list" },
-            { title: " Add Supplier Categories", icon: Users, href: "/dashboard/suplier_management/add-supplier-categories" },
+            { title: "Add Supplier", icon: Users, href: "/dashboard/suplier-management/add_supplier" },
+            { title: "Supplier List", icon: Users, href: "/dashboard/suplier-management/suplier_list" },
+            { title: " Add Supplier Categories", icon: Users, href: "/dashboard/suplier-management/add-supplier-categories" },
         ],
     },
     { title: "View Dealerships", icon: Building2, href: "/dealerships" },
@@ -62,4 +62,14 @@ export const adminsidebar: NavItem[] = [
         ],
     },
     { title: "Chat", icon: MessageSquare, href: "/chat" },
+    {
+        title: "User Management",
+        icon: Users,
+        href: "/users",
+        children: [
+            { title: "Add User", icon: Users, href: "/dashboard/user-management/add-user" },
+            { title: "View User", icon: Users, href: "/dashboard/suplier_management/suplier_list" },
+        ],
+    },
+    { title: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
