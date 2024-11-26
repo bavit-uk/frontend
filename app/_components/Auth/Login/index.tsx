@@ -72,7 +72,6 @@ console.log(handleRegister)
   //   },
   //   onError: (errorResponse) => console.log(errorResponse),
   // });
-
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
       data.email = data.email.toLowerCase();
@@ -87,29 +86,24 @@ console.log(handleRegister)
           mode: "login",
         })
       );
+      toast.success("Logged in successfully"); // Success Toast
+
+      // Handle redirection based on user type
       if (data.userType === "Seller" && data.dealership?.status !== "Active") {
-        // Show success message and close modal if everything is okay
-        toast.success("Logged in successfully");
-        dispatch(closeModal());
         router.push("/verify-seller");
       } else if (data.userType === "Customer") {
         router.push("/vehicles");
-        toast.success("Logged in Successfully");
-        dispatch(closeModal());
       } else {
-        // Show success message and close modal if everything is okay
-        toast.success("Logged in successfully");
-        dispatch(closeModal());
+        router.push("/dashboard");
       }
+      dispatch(closeModal());
     },
     onError: (error: AxiosError<any>) => {
-      console.log(error.response?.data);
-      toast.error(
-        error.response?.data?.message || "There was an error logging in"
-      );
+      // Backend Error Handling
+      const errorMessage = error.response?.data?.message || "There was an error logging in";
+      toast.error(errorMessage); // Display the error message from backend
     },
   });
-
   return (
     <div className="bg-gray-200 p-8 h-screen w-full">
       <form

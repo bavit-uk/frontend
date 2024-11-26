@@ -57,35 +57,36 @@ const Register = ({}) => {
   } = useForm<Inputs>({
     reValidateMode: "onChange",
   });
+  
   const handleLogin = () => {
     router.push("/login");
   };
+
   const close = () => {
     dispatch(closeModal());
   };
-  console.log("getvalues", getValues());
-  console.log("errors", errors);
+
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
-      console.log("before sending req", data);
+      console.log("Before sending req", data);
       data.email = data.email.toLowerCase();
-      // data.userType = "Customer";
       const response = await client.post("/auth/register", data);
       return response.data.data;
     },
 
     onSuccess: (data, inputs) => {
-      toast.success("You have successfully registered");
+      toast.success("You have successfully registered!");
       dispatch(openModal({ mode: "login" }));
+      // Redirect to login page (if necessary)
+      router.push("/login");
     },
     onError: (error: AxiosError<any>) => {
       console.log(error.response?.data);
       toast.error(
-        error.response?.data?.message || "There was an error registering"
+        error.response?.data?.message || "There was an error registering. Please try again."
       );
     },
   });
-
   // const googleSignup = useGoogleLogin({
   //   flow: 'auth-code',
   //   onSuccess: async (codeResponse) => {
@@ -118,16 +119,32 @@ const Register = ({}) => {
   //     );
   //   },
   // });
-
   const googleSignup = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      // Proceed with user registration flow
+      if (user) {
+        const googleUser = {
+          email: user.email,
+          firstName: user.displayName?.split(" ")[0],
+          lastName: user.displayName?.split(" ")[1],
+          // Add other user fields here if needed
+        };
+
+        // You can now either automatically log in the user or show the user type selection
+        toast.success("Google sign-up successful!");
+        // dispatch(openModal({ mode: "userType" })); // Example: show user type modal
+        // Optionally, save the user in your Redux store, etc.
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Google Sign-up Error:", error);
+      toast.error("Failed to sign up using Google. Please try again.");
     }
   };
+
   return (
-    <div className="bg-gray-200 p-8">
+    <div className="bg-gray-200 p-8 h-screen w-full">
       <form
         className=" space-y-2 my-4 w-1/2 mx-auto space-y-4 px-4 py-6 bg-white shadow-md rounded-lg"
         onSubmit={handleSubmit((data) => onSubmit.mutate(data))}
