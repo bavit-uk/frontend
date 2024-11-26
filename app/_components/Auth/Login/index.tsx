@@ -112,16 +112,17 @@ console.log(handleRegister)
         noValidate
       >
         {onSubmit.isPending}
-        <ControlledInput
+         {/* Email Input */}
+         <ControlledInput
           type="email"
           placeholder="Email"
           errors={errors}
           register={register}
           rules={{
-            required: "Email is required",
+            required: "Email address is required", // Handling empty email
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: "Invalid email address",
+              message: "Invalid email format", // Invalid email format
             },
           }}
           {...register("email")}
@@ -131,13 +132,15 @@ console.log(handleRegister)
           required
         />
 
+     
+        {/* Password Input */}
         <ControlledInput
           type="password"
           placeholder="Password"
           errors={errors}
           register={register}
           rules={{
-            required: "Password is required",
+            required: "Password is required", // Handling empty password
           }}
           {...register("password")}
           classes={{
