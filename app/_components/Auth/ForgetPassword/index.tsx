@@ -25,7 +25,7 @@ const ForgetPassword = () => {
 
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
-      const response = await client.post("/auth/forget-password", {
+      const response = await client.post("/auth/forgot-password", {
         email: data.email.toLowerCase(),
       });
       return response.data;

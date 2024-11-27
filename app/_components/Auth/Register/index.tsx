@@ -33,6 +33,7 @@ type Inputs = {
   phoneNumber: string;
   email: string;
   password: string;
+  confirmPassword:string;
 };
 
 // type GoogleTokenType = {
@@ -57,32 +58,34 @@ const Register = ({}) => {
   } = useForm<Inputs>({
     reValidateMode: "onChange",
   });
+  
   const handleLogin = () => {
     router.push("/login");
   };
+
   const close = () => {
     dispatch(closeModal());
   };
-  console.log("getvalues", getValues());
-  console.log("errors", errors);
+  const password = watch("password");
+  const confirmPassword = watch("confirmPassword");
+
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
-      console.log("before sending req", data);
-      data.email = data.email.toLowerCase();
-      // data.userType = "Customer";
-      const response = await client.post("/auth/register", data);
+      // Send only the password in the payload
+      const response = await client.post("/auth/register", {
+        ...data,
+        // Omit the confirmPassword from the payload
+        confirmPassword: undefined,
+      });
       return response.data.data;
     },
 
-    onSuccess: (data, inputs) => {
+    onSuccess: (data) => {
       toast.success("You have successfully registered");
-      dispatch(openModal({ mode: "login" }));
+      router.push("/login");
     },
     onError: (error: AxiosError<any>) => {
-      console.log(error.response?.data);
-      toast.error(
-        error.response?.data?.message || "There was an error registering"
-      );
+      toast.error(error.response?.data?.message || "There was an error registering");
     },
   });
 
@@ -118,16 +121,32 @@ const Register = ({}) => {
   //     );
   //   },
   // });
-
   const googleSignup = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      // Proceed with user registration flow
+      if (user) {
+        const googleUser = {
+          email: user.email,
+          firstName: user.displayName?.split(" ")[0],
+          lastName: user.displayName?.split(" ")[1],
+          // Add other user fields here if needed
+        };
+
+        // You can now either automatically log in the user or show the user type selection
+        toast.success("Google sign-up successful!");
+        // dispatch(openModal({ mode: "userType" })); // Example: show user type modal
+        // Optionally, save the user in your Redux store, etc.
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Google Sign-up Error:", error);
+      toast.error("Failed to sign up using Google. Please try again.");
     }
   };
+
   return (
-    <div className="bg-gray-200 p-8">
+    <div className="bg-gray-200 p-8 h-screen w-full">
       <form
         className=" space-y-2 my-4 w-1/2 mx-auto space-y-4 px-4 py-6 bg-white shadow-md rounded-lg"
         onSubmit={handleSubmit((data) => onSubmit.mutate(data))}
@@ -151,6 +170,7 @@ const Register = ({}) => {
           required
         /> */}
 
+        {/* First Name */}
         <ControlledInput
           type="text"
           name="firstName"
@@ -160,21 +180,20 @@ const Register = ({}) => {
           rules={{
             required: "First Name is required",
             pattern: {
-              value: /^[a-z ,.'-]+$/i,
+              value: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
               message: "Invalid First Name",
             },
             minLength: {
               value: 2,
-              message: "First Name should be atleast 2 characters",
+              message: "First Name should be at least 2 characters",
             },
           }}
-          classes={{
-            input: "text-xl px-4 py-3",
-          }}
+          classes={{ input: "text-xl px-4 py-3" }}
           required
         />
 
-        <ControlledInput
+         {/* Last Name */}
+         <ControlledInput
           type="text"
           name="lastName"
           placeholder="Last Name"
@@ -183,21 +202,19 @@ const Register = ({}) => {
           rules={{
             required: "Last Name is required",
             pattern: {
-              value: /^[a-z ,.'-]+$/i,
+              value: /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/,
               message: "Invalid Last Name",
             },
             minLength: {
               value: 2,
-              message: "Last Name should be atleast 2 characters",
+              message: "Last Name should be at least 2 characters",
             },
           }}
-          classes={{
-            input: "text-xl px-4 py-3",
-          }}
+          classes={{ input: "text-xl px-4 py-3" }}
           required
         />
-
-        <ControlledInput
+         {/* Phone Number */}
+         <ControlledInput
           type="tel"
           name="phoneNumber"
           placeholder="Cell Number"
@@ -211,13 +228,12 @@ const Register = ({}) => {
               message: "Invalid Cell Number",
             },
           }}
-          classes={{
-            input: "text-xl px-4 py-3",
-          }}
+          classes={{ input: "text-xl px-4 py-3" }}
           required
         />
 
-        <ControlledInput
+       {/* Email */}
+       <ControlledInput
           type="email"
           name="email"
           placeholder="Email"
@@ -229,14 +245,18 @@ const Register = ({}) => {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
               message: "Invalid email address",
             },
+            maxLength: {
+              value: 255,
+              message: "Email exceeds maximum length",
+            },
           }}
-          classes={{
-            input: "text-xl px-4 py-3",
-          }}
+          classes={{ input: "text-xl px-4 py-3" }}
           required
         />
 
-        <ControlledInput
+      
+{/* Password */}
+<ControlledInput
           type="password"
           name="password"
           placeholder="Password"
@@ -248,16 +268,15 @@ const Register = ({}) => {
               value:
                 /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
               message:
-                "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+                "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character",
             },
           }}
-          classes={{
-            input: "text-xl px-4 py-3",
-          }}
+          classes={{ input: "text-xl px-4 py-3" }}
           required
         />
 
-        {/* <ControlledInput
+        {/* Confirm Password */}
+        <ControlledInput
           type="password"
           name="confirmPassword"
           placeholder="Confirm Password"
@@ -265,13 +284,12 @@ const Register = ({}) => {
           register={register}
           rules={{
             required: "Confirm Password is required",
-            validate: (value: string) => value === watch("password") || "Passwords do not match",
+            validate: (value: string) =>
+              value === password || "Passwords do not match", // Validate password match
           }}
-          classes={{
-            input: "text-xl px-4 py-3",
-          }}
+          classes={{ input: "text-xl px-4 py-3" }}
           required
-        /> */}
+        />
 
         <button
           className="bg-red-500 w-full rounded-md px-6 py-4 text-xl font-medium text-white"

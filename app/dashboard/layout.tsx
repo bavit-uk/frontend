@@ -1,7 +1,7 @@
 "use client";
 import Sidebar from "../_components/Sidebar/Sidebar";
-import { changeState } from "../store/slices/sidebar";
-import { useAppDispatch, useAppSelector } from "@/app/store/hook";
+// import { changeState } from "../store/slices/sidebar";
+import {  useAppSelector } from "@/app/store/hook";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     const collapsed = useAppSelector((state) => state.sidebar.collapsed);
