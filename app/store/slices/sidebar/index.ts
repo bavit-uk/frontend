@@ -8,15 +8,18 @@ const initialState: SidebarState = {
   collapsed: false
 }
 
-export const sidebarSlice = createSlice({
+const sidebarSlice = createSlice({
   name: 'sidebar',
   initialState,
   reducers: {
-    toggleSidebar: (state) => {
+    changeState: (state) => {
       state.collapsed = !state.collapsed
     },
-    setSidebarCollapsed: (state, action: PayloadAction<boolean>) => {
+    setcollapsed: (state, action: PayloadAction<boolean>) => {
       state.collapsed = action.payload
     }
   }
 })
+
+export const { changeState, setcollapsed } = sidebarSlice.actions
+export default sidebarSlice.reducer
