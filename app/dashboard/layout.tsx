@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         <Sidebar />
                     </div>
                     {/* <div>{children}</div> */}
-                    <main className={`min-h-screen flex-grow bg-red-200 transition-all duration-300 ${collapsed ? "ml-16" : "ml-64"}`}>{children}</main>
+                    <main className={`min-h-screen flex-grow  transition-all duration-300 ${collapsed ? "ml-16" : "ml-64"}`}>{children}</main>
                 </div>
             </body>
         </html>
