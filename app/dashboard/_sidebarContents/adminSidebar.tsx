@@ -68,7 +68,11 @@ export const adminsidebar: NavItem[] = [
         href: "/users",
         children: [
             { title: "Add User", icon: Users, href: "/dashboard/user-management/add-user" },
+<<<<<<< Updated upstream
             { title: "View User", icon: Users, href: "/dashboard/suplier_management/suplier_list" },
+=======
+            { title: "View User", icon: Users, href: "/dashboard/user-management/view-user" },
+>>>>>>> Stashed changes
         ],
     },
     { title: "Settings", icon: Settings, href: "/dashboard/settings" },
