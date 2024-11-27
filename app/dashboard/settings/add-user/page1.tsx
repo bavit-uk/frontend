@@ -7,10 +7,6 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { client } from "@/app/_utils/axios";
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 // Import custom components
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
 import { cookies } from "next/headers";

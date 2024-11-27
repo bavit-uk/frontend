@@ -13,17 +13,36 @@ import { cookies } from "next/headers";
 import { Loader } from "lucide-react";
 
 // Define input types for form
+<<<<<<< Updated upstream
+=======
+type Address = {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    _id: string;
+};
+
+>>>>>>> Stashed changes
 type Inputs = {
     firstName: string;
     lastName: string;
     phoneNumber: string;
     email: string;
+<<<<<<< Updated upstream
     dateOfBirth: string;
     zipCode: string;
     state: string;
     city: string;
     address: string;
     country: string;
+=======
+    dob: string;
+    country: string;
+    _id: string;
+    address: Address[];
+>>>>>>> Stashed changes
 };
 
 export default function ProfileSettingsPage() {
@@ -33,6 +52,10 @@ export default function ProfileSettingsPage() {
         register,
         handleSubmit,
         watch,
+<<<<<<< Updated upstream
+=======
+        reset,
+>>>>>>> Stashed changes
         getValues,
         formState: { errors },
     } = useForm<Inputs>({
@@ -56,16 +79,22 @@ export default function ProfileSettingsPage() {
     // }, []);
 
     useEffect(() => {
+<<<<<<< Updated upstream
         console.log("Hello");
         const fetchProfile = async () => {
             try {
                 console.log("inside fetc profile");
+=======
+        const fetchProfile = async () => {
+            try {
+>>>>>>> Stashed changes
                 const response = await client.get("auth/profile", {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                     },
                 });
                 const data = await response.data;
+<<<<<<< Updated upstream
                 if (response.data) {
                     setuserData(data.user);
                 }
@@ -93,11 +122,22 @@ export default function ProfileSettingsPage() {
             //    catch (error) {
             //     console.error("Error fetching profile:", error);
             //   }
+=======
+                if (response) {
+                    setuserData(data);
+                    reset({ ...data.user, address: data.address });
+                }
+                console.log("response", data);
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            }
+>>>>>>> Stashed changes
         };
 
         fetchProfile();
     }, []);
 
+<<<<<<< Updated upstream
     console.log("getvalues", getValues());
     console.log("errors", errors);
     const onSubmit = useMutation({
@@ -136,6 +176,63 @@ export default function ProfileSettingsPage() {
         });
         return response.data.data;
     }
+=======
+    // console.log("getvalues", getValues());
+    // console.log("errors", errors);
+
+    const onSubmit = useMutation({
+        mutationFn: async (data: Inputs) => {
+            // Restructure the data into the desired format
+            const transformedData = {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                phoneNumber: data.phoneNumber,
+                dob: data.dob,
+                address: getValues().address.map((address: Address, index: number) => ({
+                    _id: userData?.address[index]._id,
+                    street: address.street,
+                    city: address.city,
+                    state: address.state,
+                    postalCode: address.postalCode,
+                    country: address.country,
+                })),
+            };
+            // _id: userData?.user._id,
+            // // street: data.street,
+            // city: data.city,
+            // state: data.state,
+            // zipCode: data.zipCode,
+            // country: data.country,
+            console.log("Transformed Data:", transformedData);
+            // console.log("Token :", localStorage.getItem);
+
+            // Send the transformed data to the server
+            const response = await client.patch("auth/update-profile", transformedData, {
+                // console.log( "transformedData" , transformedData)
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                },
+            });
+            // console.log("Response:", response.data.message);
+            toast.success(response.data.message);
+            return response.data;
+        },
+    });
+
+    // const updateUser = async (data: Inputs) => {
+    //     console.log("before sending req", data);
+    //     // data.email = data.email.toLowerCase();
+    //     // data.userType = "Customer";
+    //     const response = await client.post("auth/update-profile", data, {
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //         },
+    //     });
+    //     return response.data.data;
+    // };
+>>>>>>> Stashed changes
 
     if (!userData)
         return (
@@ -181,14 +278,24 @@ export default function ProfileSettingsPage() {
                     type="text"
                     name="lastName"
                     placeholder="Last Name"
+<<<<<<< Updated upstream
                     value={userData.lastName}
+=======
+                    // value={userData.user.lastName}
+
+>>>>>>> Stashed changes
                     errors={errors}
                     register={register}
                     rules={{
                         required: "Last Name is required",
                         pattern: {
+<<<<<<< Updated upstream
                             value: /^[a-z ,.'-]+$/i,
                             message: "Invalid Last Name",
+=======
+                            value: /^[a-zA-Z\s,.'-]+$/,
+                            message: "Special characters not allowed",
+>>>>>>> Stashed changes
                         },
                         minLength: {
                             value: 2,
@@ -220,6 +327,10 @@ export default function ProfileSettingsPage() {
                         input: "text-xl px-4 py-3",
                     }}
                     required
+<<<<<<< Updated upstream
+=======
+                    readOnly
+>>>>>>> Stashed changes
                 />
 
                 <ControlledInput
@@ -267,7 +378,11 @@ export default function ProfileSettingsPage() {
                 <ControlledInput
                     label="Date of Birth"
                     type="date"
+<<<<<<< Updated upstream
                     name="dateOfBirth"
+=======
+                    name="dob"
+>>>>>>> Stashed changes
                     placeholder="Date of Birth"
                     // value={userData.dateOfBirth}
                     errors={errors}
@@ -285,6 +400,7 @@ export default function ProfileSettingsPage() {
                     required
                 />
 
+<<<<<<< Updated upstream
                 <ControlledInput
                     label="Street"
                     type="text"
@@ -380,12 +496,116 @@ export default function ProfileSettingsPage() {
                     }}
                     required
                 />
+=======
+                {getValues().address.map((data, index) => (
+                    <>
+                        <div key={index} className=" md:col-span-2 lg:col-span-3">
+                            Address {index + 1}
+                        </div>
+                        <div className="grid col-span-3 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <ControlledInput
+                                label="Street"
+                                type="text"
+                                name={`address.${[index]}.street`}
+                                placeholder="Enter Street"
+                                errors={errors}
+                                register={register}
+                                rules={{}}
+                                classes={{
+                                    input: "text-xl p-4 w-full",
+                                }}
+                                required
+                            />
+
+                            <ControlledInput
+                                label="City"
+                                type="text"
+                                name={`address.${[index]}.city`}
+                                placeholder="Enter City"
+                                errors={errors}
+                                register={register}
+                                rules={{
+                                    pattern: {
+                                        value: /^[a-z ,.'-]+$/i,
+                                        message: "Invalid City",
+                                    },
+                                }}
+                                classes={{
+                                    input: "text-xl p-4 w-full",
+                                }}
+                                required
+                            />
+
+                            <ControlledInput
+                                label="State"
+                                type="text"
+                                name={`address.${[index]}.state`}
+                                placeholder="Enter State"
+                                errors={errors}
+                                register={register}
+                                rules={{
+                                    pattern: {
+                                        value: /^[a-z ,.'-]+$/i,
+                                        message: "Invalid State",
+                                    },
+                                }}
+                                classes={{
+                                    input: "text-xl p-4 w-full",
+                                }}
+                                required
+                            />
+
+                            <ControlledInput
+                                label="Postal Code"
+                                type="text"
+                                name={`address.${[index]}.postalCode`}
+                                placeholder="Enter Zip Code"
+                                errors={errors}
+                                register={register}
+                                // rules={{
+                                //     pattern: {
+                                //         value: /^\d{5}(-\d{4})?$/,
+                                //         message: "Invalid Postal Code",
+                                //     },
+                                // }}
+                                classes={{
+                                    input: "text-xl p-4 w-full",
+                                }}
+                                required
+                            />
+
+                            <ControlledInput
+                                label="Country"
+                                type="text"
+                                name={`address.${[index]}.country`}
+                                placeholder="Country"
+                                errors={errors}
+                                register={register}
+                                rules={{
+                                    pattern: {
+                                        value: /^[a-zA-Z\s,.'-]+$/,
+                                        message: "Invalid Country",
+                                    },
+                                }}
+                                classes={{
+                                    input: "text-xl p-4 w-full",
+                                }}
+                                required
+                            />
+                        </div>
+                    </>
+                ))}
+>>>>>>> Stashed changes
 
                 <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
                     <button type="button" className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
+<<<<<<< Updated upstream
                     <button onClick={updateUser} type="submit" className="bg-red-500 rounded-md px-8 py-4 font-medium text-white hover:bg-red-600 transition-colors">
+=======
+                    <button type="submit" className="bg-red-500 rounded-md px-8 py-4 font-medium text-white hover:bg-red-600 transition-colors">
+>>>>>>> Stashed changes
                         {"Update Profile"}
                     </button>
                 </div>
