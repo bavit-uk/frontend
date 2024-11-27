@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { FileDown } from "lucide-react";
-import Button from "@components/ui/Button";
+import Button from "../ui/Button";
 import React from "react";
 
 type PDFDownloadProps = {

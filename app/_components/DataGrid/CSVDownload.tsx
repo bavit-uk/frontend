@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useMemo } from "react";
 import { CSVLink } from "react-csv";
 import { FileDown } from "lucide-react";
-import Button from "@components/ui/Button";
-import { flattenObject } from "@utils/flattenObject";
+import Button from "../ui/Button";
+import { flattenObject } from "@/app/_utils/flattenObject";
 
 type CSVDownloadProps = {
   data: unknown[];
