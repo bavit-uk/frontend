@@ -1,133 +1,123 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import {  useEffect, useState } from "react";
 
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-
 import { toast } from "react-toastify";
 import { client } from "@/app/_utils/axios";
-// Import custom components
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
-
 import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 // Define input types for form
 type Address = {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-    _id: string;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  _id: string;
 };
 
 type Inputs = {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    dob: string;
-    country: string;
-    _id: string;
-    address: Address[];
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  dob: string;
+  country: string;
+  _id: string;
+  address: Address[];
 };
 
 export default function ProfileSettingsPage() {
-    const [userData, setuserData] = useState<Inputs | null>(null);
+  const [userData, setUserData] = useState<Inputs | null>(null);
 
-    const {
-        register,
-        handleSubmit,
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm<Inputs>({
+    reValidateMode: "onChange",
+  });
 
-        reset,
-        getValues,
-        formState: { errors },
-    } = useForm<Inputs>(
-        {
-        reValidateMode: "onChange",
-    });
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          throw new Error("Access token is missing");
+        }
 
-    // const cookieStore = await cookies(); // This returns a ReadonlyRequestCookies object
-    // const token = cookieStore.get("accessToken")?.value; // Access the token value
+        const response = await client.get("auth/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    // useEffect(() => {
-    //     const fetchProfile = async () => {
-    //         const response = await client.get("auth/profile" , {
-    //             headers: {
-    //                 Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDA5OTYzNjljZjc3OWQzZGI5NjlmNyIsImlhdCI6MTczMjI5NjU1MywiZXhwIjoxNzMyMzAwMTUzfQ.g3pWIyg4ue3MhZ5G5bYAQm-90GAQL0dqSmH9MPWkx5M`,
-    //     }});
-    //         console.log("response", response.data.data);
-    //         // const { firstName, lastName, email, phoneNumber, dateOfBirth, address, city, state, zipCode } = response.data.data;
-    //         // setValues({ firstName, lastName, email, phoneNumber, dateOfBirth, address, city, state, zipCode });
-    //     };
-    //     fetchProfile();
-    // }, []);
+        const data = response.data;
+        if (data) {
+          setUserData(data);
+          reset({ ...data.user, address: data.address });
+        }
+      } catch (error: any) {
+        console.error("Error fetching profile:", error.message);
+        toast.error("Error fetching profile. Please try again.");
+      }
+    };
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await client.get("auth/profile", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                });
-                const data = await response.data;
-                if (response) {
-                    setuserData(data);
-                    reset({ ...data.user, address: data.address });
-                }
-                console.log("response", data);
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-            }
+    fetchProfile();
+  }, [reset]);
+
+  const onSubmit = useMutation({
+    mutationFn: async (data: Inputs) => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          throw new Error("Access token is missing");
+        }
+
+        // Restructure the data to send it in the correct format
+        const transformedData = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phoneNumber: data.phoneNumber,
+          dob: data.dob,
+          address: getValues().address.map((address: Address, index: number) => ({
+            _id: userData?.address[index]._id,
+            street: address.street,
+            city: address.city,
+            state: address.state,
+            postalCode: address.postalCode,
+            country: address.country,
+          })),
         };
 
-        fetchProfile();
-    }, []);
+        const response = await client.patch("auth/update-profile", transformedData, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    // console.log("getvalues", getValues());
-    // console.log("errors", errors);
+        toast.success(response.data.message);
+        return response.data;
+      } catch (error: any) {
+        console.error("Error updating profile:", error.message);
+        toast.error("Error updating profile. Please try again.");
+      }
+    },
+    onError: (error) => {
+      toast.error("Something went wrong. Please try again later.");
+      console.error(error);
+    },
+    onSuccess: (data) => {
+      console.log("Profile update successful:", data);
+    },
+  });
 
-    const onSubmit = useMutation({
-        mutationFn: async (data: Inputs) => {
-            // Restructure the data into the desired format
-            const transformedData = {
-                firstName: data.firstName,
-                lastName: data.lastName,
-                phoneNumber: data.phoneNumber,
-                dob: data.dob,
-                address: getValues().address.map((address: Address, index: number) => ({
-                    _id: userData?.address[index]._id,
-                    street: address.street,
-                    city: address.city,
-                    state: address.state,
-                    postalCode: address.postalCode,
-                    country: address.country,
-                })),
-            };
-            // _id: userData?.user._id,
-            // // street: data.street,
-            // city: data.city,
-            // state: data.state,
-            // zipCode: data.zipCode,
-            // country: data.country,
-            console.log("Transformed Data:", transformedData);
-            // console.log("Token :", localStorage.getItem);
-
-            // Send the transformed data to the server
-            const response = await client.patch("auth/update-profile", transformedData, {
-                // console.log( "transformedData" , transformedData)
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                },
-            });
-            // console.log("Response:", response.data.message);
-            toast.success(response.data.message);
-            return response.data;
-        },
-    });
 
     // const updateUser = async (data: Inputs) => {
     //     console.log("before sending req", data);
