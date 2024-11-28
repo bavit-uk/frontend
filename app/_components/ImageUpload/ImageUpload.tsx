@@ -1,4 +1,6 @@
-import { useVehicleContext } from "@/app/dashboard/view-vehicles/[id]/VehicleContext";
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DragDropContext, Draggable, Droppable, DropResult } from "@hello-pangea/dnd";
 import imageCompression from "browser-image-compression";
 import { EyeIcon } from "lucide-react";
@@ -38,13 +40,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   maxFiles = 1,
   form,
   fieldName,
-  type,
+
   coverImageEnabled = false,
-  draggable = false,
+
   compressImage = true,
 }) => {
-  const { setCoverImage, setVehicleImages, vehicleImages } = useVehicleContext();
-  const [images, setImages] = useState<(Image | string)[]>(vehicleImages?.flat() || []);
+  const [images, setImages] = useState<(Image | string)[]>([]);
   const [titleImage, setTitleImage] = useState<Image | string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImage, setModalImage] = useState<string | null>(null);
@@ -52,10 +53,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   useEffect(() => {
     if (images.length > 0) {
       setTitleImage(images[0]);
-      setCoverImage(images[0]);
-      setVehicleImages(images);
     }
-  }, [images, setCoverImage, setVehicleImages]);
+  }, [images]);
 
   const handleFileSelect = async (acceptedFiles: File[]) => {
     let validFiles = acceptedFiles.slice(0, maxFiles - images.length);
@@ -102,7 +101,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const handleCoverImage = (image: Image | string) => {
     if (coverImageEnabled) {
       setTitleImage(image);
-      setCoverImage(image);
       // Swap the first image with the selected image
       const updatedImages = [...images];
       const index = updatedImages.findIndex((img) => img === image);
@@ -145,7 +143,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     updatedImages.splice(destination.index, 0, movedImage);
     setImages(updatedImages);
     setTitleImage(updatedImages[0]);
-    setCoverImage(updatedImages[0]);
     form.setValue(
       fieldName,
       updatedImages.map((img) => {
@@ -156,8 +153,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       }),
     );
   };
-
-  console.log("Images array", images);
 
   return (
     <div className="container mx-auto mt-5">

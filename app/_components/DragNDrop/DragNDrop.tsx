@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { DragDropContext, Draggable, Droppable, DropResult } from "@hello-pangea/dnd";
 import { EyeIcon } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import Image from "next/image";
+
 
 interface DragNDropProps {
   setTitleImage: (image: any) => void; 

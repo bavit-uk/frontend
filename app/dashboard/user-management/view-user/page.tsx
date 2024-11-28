@@ -10,11 +10,11 @@ export default function Page() {
 
             <DynamicTable
                 columns={[
-                    { key: "name", title: "Name" },
-                    { key: "email", title: "Email" },
-                    { key: "role", title: "Role" },
-                    { key: "status", title: "Status" },
-                    { key: "action", title: "Action" },
+                    { key: "name", label: "Name" },
+                    { key: "email", label: "Email" },
+                    { key: "role", label: "Role" },
+                    { key: "status", label: "Status" },
+                    { key: "action", label: "Action" },
                 ]}
                 data={[
                     { name: "John Doe", email: "test@gmail.com" },

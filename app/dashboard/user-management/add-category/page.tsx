@@ -1,16 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/app/store/hook";
-import { useRouter } from "next/navigation";
-import { set, useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { toast } from "react-toastify";
+
 import { client } from "@/app/_utils/axios";
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
-import { cookies } from "next/headers";
-import { Loader } from "lucide-react";
+
 import ControlledTextArea from "@/app/_components/Forms/ControlledTextArea";
 import ControlledCheckbox from "@/app/_components/Forms/ControlledCheckbox";
 
@@ -82,6 +78,7 @@ export default function Page() {
         register,
         handleSubmit,
         watch,
+        setValue,
         getValues,
         formState: { errors },
     } = useForm<Inputs>({
@@ -123,7 +120,7 @@ export default function Page() {
 
                 <ControlledTextArea label="Description" name="description" register={register} />
 
-                <ControlledCheckbox label="Active" name="active" register={register} />
+                <ControlledCheckbox label="Active" name="active" watch={watch} setValue={setValue} isFormControlled/>
 
                 
 

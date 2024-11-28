@@ -1,224 +1,123 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "@/app/store/hook";
-import { useRouter } from "next/navigation";
-import { set, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { client } from "@/app/_utils/axios";
-// Import custom components
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
-import { cookies } from "next/headers";
 import { Loader } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 // Define input types for form
-<<<<<<< Updated upstream
-=======
 type Address = {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-    _id: string;
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  _id: string;
 };
 
->>>>>>> Stashed changes
 type Inputs = {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-<<<<<<< Updated upstream
-    dateOfBirth: string;
-    zipCode: string;
-    state: string;
-    city: string;
-    address: string;
-    country: string;
-=======
-    dob: string;
-    country: string;
-    _id: string;
-    address: Address[];
->>>>>>> Stashed changes
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  dob: string;
+  country: string;
+  _id: string;
+  address: Address[];
 };
 
 export default function ProfileSettingsPage() {
-    const [userData, setuserData] = useState<Inputs | null>(null);
-    const router = useRouter();
-    const {
-        register,
-        handleSubmit,
-        watch,
-<<<<<<< Updated upstream
-=======
-        reset,
->>>>>>> Stashed changes
-        getValues,
-        formState: { errors },
-    } = useForm<Inputs>({
-        reValidateMode: "onChange",
-    });
+  const [userData, setUserData] = useState<Inputs | null>(null);
 
-    // const cookieStore = await cookies(); // This returns a ReadonlyRequestCookies object
-    // const token = cookieStore.get("accessToken")?.value; // Access the token value
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm<Inputs>({
+    reValidateMode: "onChange",
+  });
 
-    // useEffect(() => {
-    //     const fetchProfile = async () => {
-    //         const response = await client.get("auth/profile" , {
-    //             headers: {
-    //                 Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDA5OTYzNjljZjc3OWQzZGI5NjlmNyIsImlhdCI6MTczMjI5NjU1MywiZXhwIjoxNzMyMzAwMTUzfQ.g3pWIyg4ue3MhZ5G5bYAQm-90GAQL0dqSmH9MPWkx5M`,
-    //     }});
-    //         console.log("response", response.data.data);
-    //         // const { firstName, lastName, email, phoneNumber, dateOfBirth, address, city, state, zipCode } = response.data.data;
-    //         // setValues({ firstName, lastName, email, phoneNumber, dateOfBirth, address, city, state, zipCode });
-    //     };
-    //     fetchProfile();
-    // }, []);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          throw new Error("Access token is missing");
+        }
 
-    useEffect(() => {
-<<<<<<< Updated upstream
-        console.log("Hello");
-        const fetchProfile = async () => {
-            try {
-                console.log("inside fetc profile");
-=======
-        const fetchProfile = async () => {
-            try {
->>>>>>> Stashed changes
-                const response = await client.get("auth/profile", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                });
-                const data = await response.data;
-<<<<<<< Updated upstream
-                if (response.data) {
-                    setuserData(data.user);
-                }
-                console.log("response", data.user);
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-            }
-            // await fetch("https://8rgvpdmw-5000.euw.devtunnels.ms/api/auth/profile", {
-            //   method: "GET",
-            //   headers: {
-            //     Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NDA5OTYzNjljZjc3OWQzZGI5NjlmNyIsImlhdCI6MTczMjI5NjU1MywiZXhwIjoxNzMyMzAwMTUzfQ.g3pWIyg4ue3MhZ5G5bYAQm-90GAQL0dqSmH9MPWkx5M`,
-            //   },
-            // });
+        const response = await client.get("auth/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-            // if (!response.ok) {
-            //   throw new Error(`HTTP error! Status: ${response.status}`);
-            // }
+        const data = response.data;
+        if (data) {
+          setUserData(data);
+          reset({ ...data.user, address: data.address });
+        }
+      } catch (error: any) {
+        console.error("Error fetching profile:", error.message);
+        toast.error("Error fetching profile. Please try again.");
+      }
+    };
 
-            // const data = await response.json();
+    fetchProfile();
+  }, [reset]);
 
-            // console.log("response", data.user);
-            // const { firstName, lastName, email, phoneNumber, dateOfBirth, address, city, state, zipCode } = data.data;
-            // setValues({ firstName, lastName, email, phoneNumber, dateOfBirth, address, city, state, zipCode });
-            //   }
-            //    catch (error) {
-            //     console.error("Error fetching profile:", error);
-            //   }
-=======
-                if (response) {
-                    setuserData(data);
-                    reset({ ...data.user, address: data.address });
-                }
-                console.log("response", data);
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-            }
->>>>>>> Stashed changes
+  const onSubmit = useMutation({
+    mutationFn: async (data: Inputs) => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          throw new Error("Access token is missing");
+        }
+
+        // Restructure the data to send it in the correct format
+        const transformedData = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phoneNumber: data.phoneNumber,
+          dob: data.dob,
+          address: getValues().address.map((address: Address, index: number) => ({
+            _id: userData?.address[index]._id,
+            street: address.street,
+            city: address.city,
+            state: address.state,
+            postalCode: address.postalCode,
+            country: address.country,
+          })),
         };
 
-        fetchProfile();
-    }, []);
-
-<<<<<<< Updated upstream
-    console.log("getvalues", getValues());
-    console.log("errors", errors);
-    const onSubmit = useMutation({
-        mutationFn: async (data: Inputs) => {
-            console.log("before sending req", data);
-            data.email = data.email.toLowerCase();
-            // data.userType = "Customer";
-            const response = await client.post("auth/update-profile", data, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            return response.data.data;
-        },
-
-        onSuccess: (data, inputs) => {
-            toast.success("You have successfully registered");
-            // dispatch(openModal({ mode: "login" }));
-        },
-        onError: (error: AxiosError<any>) => {
-            console.log(error.response?.data);
-            toast.error(error.response?.data?.message || "There was an error registering");
-        },
-    });
-
-    const updateUser = async (data: Inputs) => {
-        console.log("before sending req", data);
-        // data.email = data.email.toLowerCase();
-        // data.userType = "Customer";
-        const response = await client.post("auth/update-profile", data, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+        const response = await client.patch("auth/update-profile", transformedData, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
-        return response.data.data;
-    }
-=======
-    // console.log("getvalues", getValues());
-    // console.log("errors", errors);
 
-    const onSubmit = useMutation({
-        mutationFn: async (data: Inputs) => {
-            // Restructure the data into the desired format
-            const transformedData = {
-                firstName: data.firstName,
-                lastName: data.lastName,
-                phoneNumber: data.phoneNumber,
-                dob: data.dob,
-                address: getValues().address.map((address: Address, index: number) => ({
-                    _id: userData?.address[index]._id,
-                    street: address.street,
-                    city: address.city,
-                    state: address.state,
-                    postalCode: address.postalCode,
-                    country: address.country,
-                })),
-            };
-            // _id: userData?.user._id,
-            // // street: data.street,
-            // city: data.city,
-            // state: data.state,
-            // zipCode: data.zipCode,
-            // country: data.country,
-            console.log("Transformed Data:", transformedData);
-            // console.log("Token :", localStorage.getItem);
+        toast.success(response.data.message);
+        return response.data;
+      } catch (error: any) {
+        console.error("Error updating profile:", error.message);
+        toast.error("Error updating profile. Please try again.");
+      }
+    },
+    onError: (error) => {
+      toast.error("Something went wrong. Please try again later.");
+      console.error(error);
+    },
+    onSuccess: (data) => {
+      console.log("Profile update successful:", data);
+    },
+  });
 
-            // Send the transformed data to the server
-            const response = await client.patch("auth/update-profile", transformedData, {
-                // console.log( "transformedData" , transformedData)
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                },
-            });
-            // console.log("Response:", response.data.message);
-            toast.success(response.data.message);
-            return response.data;
-        },
-    });
 
     // const updateUser = async (data: Inputs) => {
     //     console.log("before sending req", data);
@@ -232,7 +131,6 @@ export default function ProfileSettingsPage() {
     //     });
     //     return response.data.data;
     // };
->>>>>>> Stashed changes
 
     if (!userData)
         return (
@@ -247,7 +145,7 @@ export default function ProfileSettingsPage() {
                 <p className="text-gray-600">Update Your Profile Information</p>
             </div>
 
-            <form className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" onSubmit={handleSubmit((data) => onSubmit.mutate(data))} noValidate>
+            <form className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" onSubmit={handleSubmit((data: Inputs) => onSubmit.mutate(data))} noValidate>
                 <ControlledInput
                     label="First Name"
                     type="text"
@@ -278,24 +176,15 @@ export default function ProfileSettingsPage() {
                     type="text"
                     name="lastName"
                     placeholder="Last Name"
-<<<<<<< Updated upstream
-                    value={userData.lastName}
-=======
                     // value={userData.user.lastName}
 
->>>>>>> Stashed changes
                     errors={errors}
                     register={register}
                     rules={{
                         required: "Last Name is required",
                         pattern: {
-<<<<<<< Updated upstream
-                            value: /^[a-z ,.'-]+$/i,
-                            message: "Invalid Last Name",
-=======
                             value: /^[a-zA-Z\s,.'-]+$/,
                             message: "Special characters not allowed",
->>>>>>> Stashed changes
                         },
                         minLength: {
                             value: 2,
@@ -327,10 +216,7 @@ export default function ProfileSettingsPage() {
                         input: "text-xl px-4 py-3",
                     }}
                     required
-<<<<<<< Updated upstream
-=======
                     readOnly
->>>>>>> Stashed changes
                 />
 
                 <ControlledInput
@@ -378,11 +264,7 @@ export default function ProfileSettingsPage() {
                 <ControlledInput
                     label="Date of Birth"
                     type="date"
-<<<<<<< Updated upstream
-                    name="dateOfBirth"
-=======
                     name="dob"
->>>>>>> Stashed changes
                     placeholder="Date of Birth"
                     // value={userData.dateOfBirth}
                     errors={errors}
@@ -400,104 +282,7 @@ export default function ProfileSettingsPage() {
                     required
                 />
 
-<<<<<<< Updated upstream
-                <ControlledInput
-                    label="Street"
-                    type="text"
-                    name="street"
-                    placeholder="Enter Street"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                       
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
-                <ControlledInput
-                    label="City"
-                    type="text"
-                    name="city"
-                    placeholder="Enter City"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                        
-                        pattern: {
-                            value: /^[a-z ,.'-]+$/i,
-                            message: "Invalid City",
-                        },
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
-                <ControlledInput
-                    label="State"
-                    type="text"
-                    name="state"
-                    placeholder="Enter State"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                      
-                        pattern: {
-                            value: /^[a-z ,.'-]+$/i,
-                            message: "Invalid State",
-                        },
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
-                <ControlledInput
-                    label="Zip Code"
-                    type="text"
-                    name="zipCode"
-                    placeholder="Enter Zip Code"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                      
-                        pattern: {
-                            value: /^\d{5}(-\d{4})?$/,
-                            message: "Invalid Zip Code",
-                        },
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
-                <ControlledInput
-                    label="Country"
-                    type="text"
-                    name="country"
-                    placeholder="Country"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                      
-                        pattern: {
-                            value: /^[a-zA-Z\s,.'-]+$/,
-                            message: "Invalid Country",
-                        },
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-=======
-                {getValues().address.map((data, index) => (
+                {getValues().address.map((data: any, index:number) => (
                     <>
                         <div key={index} className=" md:col-span-2 lg:col-span-3">
                             Address {index + 1}
@@ -595,17 +380,12 @@ export default function ProfileSettingsPage() {
                         </div>
                     </>
                 ))}
->>>>>>> Stashed changes
 
                 <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
                     <button type="button" className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
-<<<<<<< Updated upstream
-                    <button onClick={updateUser} type="submit" className="bg-red-500 rounded-md px-8 py-4 font-medium text-white hover:bg-red-600 transition-colors">
-=======
                     <button type="submit" className="bg-red-500 rounded-md px-8 py-4 font-medium text-white hover:bg-red-600 transition-colors">
->>>>>>> Stashed changes
                         {"Update Profile"}
                     </button>
                 </div>
@@ -613,3 +393,4 @@ export default function ProfileSettingsPage() {
         </div>
     );
 }
+

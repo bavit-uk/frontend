@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/app/store/hook";
@@ -7,10 +9,6 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { client } from "@/app/_utils/axios";
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 // Import custom components
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
 import { cookies } from "next/headers";
