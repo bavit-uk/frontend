@@ -1,15 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { client } from "@/app/_utils/axios";
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
-import ControlledTextArea from "@/app/_components/Forms/ControlledTextArea";
-import ControlledCheckbox from "@/app/_components/Forms/ControlledCheckbox";
 import ImageUpload from "@/app/_components/ImageUpload/ImageUpload";
 
 type Inputs = {
     name: string;
+    images: string[];
     description: string;
     permissions: string[]; // Track selected permissions
 };
@@ -20,7 +19,7 @@ export default function AddSupplierCategory() {
         register,
         handleSubmit,
         getValues,
-        watch,
+        
         setValue,
         reset,
         formState: { errors },

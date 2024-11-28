@@ -6,7 +6,7 @@ import imageCompression from "browser-image-compression";
 import { EyeIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { FieldErrors, FieldValues, UseFormSetValue } from "react-hook-form";
+import { FieldErrors, UseFormSetValue } from "react-hook-form";
 import { uploadSingleFile } from "@/app/_utils/firebase";
 interface Image {
   preview: string;

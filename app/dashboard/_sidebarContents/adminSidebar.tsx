@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Building2, Car, Globe, Wrench, Shield, Target, ShoppingCart, Landmark, Wallet, Calculator, MessageSquare, Settings  } from "lucide-react";
+import { LayoutDashboard, Users, Settings  } from "lucide-react";
 
 interface NavItem {
     title: string;

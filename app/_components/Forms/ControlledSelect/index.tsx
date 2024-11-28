@@ -42,7 +42,7 @@ type SelectProps = FormControlledSelect;
 const ControlledSelect: ForwardRefRenderFunction<
   HTMLSelectElement,
   SelectProps
-> = (props, ref) => {
+> = (props) => {
 
   const {
     register,

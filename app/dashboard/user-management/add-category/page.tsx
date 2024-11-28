@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { client } from "@/app/_utils/axios";
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
-import ControlledTextArea from "@/app/_components/Forms/ControlledTextArea";
 import ControlledCheckbox from "@/app/_components/Forms/ControlledCheckbox";
 import { Loader } from "lucide-react";
 
@@ -20,12 +19,18 @@ type PermissionNode = {
     children: string[];
 };
 
+type PermissionsData = {
+    [key: string]: {
+        name: string;
+        subPermissions?: string[];
+    }
+};
+
 export default function AddCategoryForm() {
     const [permissions, setPermissions] = useState<PermissionNode[]>([]);
     const {
         register,
         handleSubmit,
-        getValues,
         watch,
         setValue,
         reset,
@@ -37,7 +42,7 @@ export default function AddCategoryForm() {
             permissions: [], // Initialize as an empty array
         },
     });
-    console.log("getValues", getValues());
+
     const onSubmit = useMutation({
         mutationFn: async (data: Inputs) => {
             const response = await client.post("/user-category", data, {
@@ -101,20 +106,16 @@ export default function AddCategoryForm() {
     };
 
     // Format the permissions data
-    const formatPermissions = (permissionsData: any): PermissionNode[] => {
+    const formatPermissions = (permissionsData: PermissionsData): PermissionNode[] => {
         return Object.keys(permissionsData).map((key) => {
-            const parent = permissionsData[key].parent;
-            const children = permissionsData[key].children;
-
+            const permission = permissionsData[key];
             return {
-                label: parent,
-                value: parent,
-                children: children || [],
+                label: permission.name,
+                value: permission.name,
+                children: permission.subPermissions || [],
             };
         });
     };
-
-    
 
     // Fetch permissions on component mount
     useEffect(() => {
@@ -122,7 +123,6 @@ export default function AddCategoryForm() {
             try {
                 const response = await client.get("/permissions");
                 const permissionsData = response.data.permissions;
-                console.log("permissionsData", permissionsData);
                 // Format permissions into a usable structure
                 const formattedPermissions = formatPermissions(permissionsData);
                 setPermissions(formattedPermissions);
@@ -134,18 +134,18 @@ export default function AddCategoryForm() {
     }, []);
 
     // Custom function to determine parent checkbox state
-    const isParentSelected = (parentPermission: string) => {
-        const permissionNode = permissions.find(node => node.value === parentPermission);
-        if (!permissionNode) return false;
+    // const isParentSelected = (parentPermission: string) => {
+    //     const permissionNode = permissions.find(node => node.value === parentPermission);
+    //     if (!permissionNode) return false;
 
         // Check if the parent permission itself is in the selected permissions
-        return selectedPermissions.includes(parentPermission);
-    };
+    //     return selectedPermissions.includes(parentPermission);
+    // };
 
     // Check if child permission can be selected
-    const canSelectChild = (parentPermission: string) => {
-        return selectedPermissions.includes(parentPermission);
-    };
+    // const canSelectChild = (parentPermission: string) => {
+    //     return selectedPermissions.includes(parentPermission);
+    // };
 
     if (permissions.length === 0)
         return (
@@ -180,7 +180,6 @@ export default function AddCategoryForm() {
                             value: /^[a-zA-Z\s,.'-]+$/,
                             message: "Special characters not allowed",
                         },
-
                     }}
                     classes={{
                         input: "text-xl px-4 py-3",
@@ -198,7 +197,6 @@ export default function AddCategoryForm() {
                             value: /^[a-zA-Z\s,.'-]+$/,
                             message: "Special characters not allowed",
                         },
-
                     }}
                     errors={errors}
                     register={register}
@@ -221,7 +219,7 @@ export default function AddCategoryForm() {
                                     label={`Select All ${permissionNode.label}`}
                                     name={`permissions.${permissionNode.value}`}
                                     isFormControlled
-                                    watch={() => isParentSelected(permissionNode.value)}
+                                    watch={watch}
                                     setValue={(name, checked) =>
                                         handlePermissionChange(permissionNode.value, checked, true)
                                     }
@@ -234,10 +232,8 @@ export default function AddCategoryForm() {
                                         label={childPermission}
                                         name={`permissions.${childPermission}`}
                                         isFormControlled
-                                        disabled={!canSelectChild(permissionNode.value)}
-                                        watch={() =>
-                                            selectedPermissions.includes(childPermission)
-                                        }
+                                        // disabled={!canSelectChild(permissionNode.value)}
+                                        watch={watch}
                                         setValue={(name, checked) =>
                                             handlePermissionChange(childPermission, checked)
                                         }

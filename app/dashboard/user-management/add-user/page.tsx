@@ -27,7 +27,12 @@ type Address = {
 type Inputs = {
     firstName: string;
     lastName: string;
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
     phoneNumber: string;
+    password:string;
     email: string;
     dob: string;
     country: string;
@@ -37,7 +42,7 @@ type Inputs = {
 
 export default function ProfileSettingsPage() {
     const [userData, setuserData] = useState<Inputs | null>(null);
-    const [userCategory, setUserCategory] = useState<string | null>(null);
+    const [userCategory, setUserCategory] = useState< {_id:string; role:string}[] | null>(null);
     const router = useRouter();
     const {
         register,
@@ -364,7 +369,7 @@ export default function ProfileSettingsPage() {
                     label="User Category"
                     name="userCategory"
                     options={
-                        userCategory.map((category) => ({
+                        userCategory.map((category: {_id:string; role:string}) => ({
                             value: category._id,
                             label: category.role,
                         }))
