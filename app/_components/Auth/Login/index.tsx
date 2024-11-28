@@ -76,6 +76,10 @@ console.log(handleRegister)
     mutationFn: async (data: Inputs) => {
       data.email = data.email.toLowerCase();
       const response = await client.post("/auth/login", data);
+      console.log("REsponse : " , response.data.data.accessToken)
+      localStorage.setItem("accessToken" , response.data.data.accessToken)
+      const token = localStorage.getItem("accessToken")
+      console.log("token : " , token)
       return response.data.data;
     },
     onSuccess: (data, inputs) => {

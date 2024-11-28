@@ -57,15 +57,17 @@ import { getStorage, getDownloadURL, ref, uploadBytesResumable } from "firebase/
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // Your web app's Firebase configuration
+
 const firebaseConfig = {
-  apiKey: "AIzaSyC9QNjFdjNfhutMxad32cHXvvajI5t46CY",
-  authDomain: "bav-it-uk.firebaseapp.com",
-  projectId: "bav-it-uk",
-  storageBucket: "bav-it-uk.firebasestorage.app",
-  messagingSenderId: "18638262840",
-  appId: "1:18638262840:web:97a273faae5ecd85ed8ccd",
-  measurementId: "G-KHX22YP1B9",
-};
+  apiKey: "AIzaSyCALbU1ilA1O9ZOEP8A1_6gLHqzWfOuFIk",
+    authDomain: "axiom-528ab.firebaseapp.com",
+    projectId: "axiom-528ab",
+    storageBucket: "axiom-528ab.appspot.com",
+    messagingSenderId: "788965920996",
+    appId: "1:788965920996:web:a4fb1e2abf626159ff5cf1",
+    measurementId: "G-E4M3F5JNZY"
+  };
+  
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

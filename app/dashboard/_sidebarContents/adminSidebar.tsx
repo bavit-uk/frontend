@@ -19,27 +19,27 @@ export const adminsidebar: NavItem[] = [
             { title: " Add Supplier Categories", icon: Users, href: "/dashboard/suplier-management/add-supplier-categories" },
         ],
     },
-    { title: "View Dealerships", icon: Building2, href: "/dealerships" },
-    {
-        title: "Vehicles",
-        icon: Car,
-        href: "/vehicles",
-        children: [
-            { title: "Add Vehicle", icon: Car, href: "/vehicles/add" },
-            { title: "Vehicle List", icon: Car, href: "/vehicles/list" },
-        ],
-    },
-    { title: "Website Management", icon: Globe, href: "/website" },
-    { title: "View Services", icon: Wrench, href: "/services" },
-    {
-        title: "Warranty",
-        icon: Shield,
-        href: "/warranty",
-        children: [
-            { title: "Add Warranty", icon: Shield, href: "/warranty/add" },
-            { title: "Warranty List", icon: Shield, href: "/warranty/list" },
-        ],
-    },
+    // { title: "View Dealerships", icon: Building2, href: "/dealerships" },
+    // {
+    //     title: "Vehicles",
+    //     icon: Car,
+    //     href: "/vehicles",
+    //     children: [
+    //         { title: "Add Vehicle", icon: Car, href: "/vehicles/add" },
+    //         { title: "Vehicle List", icon: Car, href: "/vehicles/list" },
+    //     ],
+    // },
+    // { title: "Website Management", icon: Globe, href: "/website" },
+    // { title: "View Services", icon: Wrench, href: "/services" },
+    // {
+    //     title: "Warranty",
+    //     icon: Shield,
+    //     href: "/warranty",
+    //     children: [
+    //         { title: "Add Warranty", icon: Shield, href: "/warranty/add" },
+    //         { title: "Warranty List", icon: Shield, href: "/warranty/list" },
+    //     ],
+    // },
     {
         title: "Leads",
         icon: Target,
@@ -68,14 +68,11 @@ export const adminsidebar: NavItem[] = [
         href: "/users",
         children: [
             { title: "Add User", icon: Users, href: "/dashboard/user-management/add-user" },
-<<<<<<< Updated upstream
             { title: "View User", icon: Users, href: "/dashboard/suplier_management/suplier_list" },
-=======
             { title: "View User", icon: Users, href: "/dashboard/user-management/view-user" },
             { title: "Add Category", icon: Users, href: "/dashboard/user-management/add-category" },
             { title: "View Category", icon: Users, href: "/dashboard/user-management/view-category" },
 
->>>>>>> Stashed changes
         ],
     },
     { title: "Settings", icon: Settings, href: "/dashboard/settings" },

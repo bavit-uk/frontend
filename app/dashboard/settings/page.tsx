@@ -6,176 +6,126 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { client } from "@/app/_utils/axios";
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
-<<<<<<< Updated upstream
 import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
-
-=======
-import { cookies } from "next/headers";
 import ImageUpload from "@/app/_components/ImageUpload/ImageUpload";
-import { Loader } from "lucide-react";
->>>>>>> Stashed changes
+import { get } from "http";
+
 // Define input types for form
 type Address = {
-  street: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  _id: string;
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    _id: string;
 };
 
 type Inputs = {
-<<<<<<< Updated upstream
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  email: string;
-  dob: string;
-  country: string;
-  _id: string;
-  address: Address[];
-};
-
-export default function ProfileSettingsPage() {
-  const [userData, setUserData] = useState<Inputs | null>(null);
-=======
     firstName: string;
     lastName: string;
     phoneNumber: string;
     email: string;
     dob: string;
+    images: string;
     country: string;
     _id: string;
     address: Address[];
 };
 
 export default function ProfileSettingsPage() {
-    const [userData, setuserData] = useState<Inputs | null>(null);
-    const router = useRouter();
+    const [userData, setUserData] = useState<Inputs | null>(null);
+
     const {
         register,
         handleSubmit,
-        watch,
         reset,
         getValues,
+        setValue,
         formState: { errors },
     } = useForm<Inputs>({
         reValidateMode: "onChange",
     });
->>>>>>> Stashed changes
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    getValues,
-    formState: { errors },
-  } = useForm<Inputs>({
-    reValidateMode: "onChange",
-  });
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-          throw new Error("Access token is missing");
-        }
-
-<<<<<<< Updated upstream
-        const response = await client.get("auth/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = response.data;
-        if (data) {
-          setUserData(data);
-          reset({ ...data.user, address: data.address });
-        }
-      } catch (error: any) {
-        console.error("Error fetching profile:", error.message);
-        toast.error("Error fetching profile. Please try again.");
-      }
-    };
-
-    fetchProfile();
-  }, [reset]);
-
-  const onSubmit = useMutation({
-    mutationFn: async (data: Inputs) => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-          throw new Error("Access token is missing");
-        }
-
-        // Restructure the data to send it in the correct format
-        const transformedData = {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          phoneNumber: data.phoneNumber,
-          dob: data.dob,
-          address: getValues().address.map((address: Address, index: number) => ({
-            _id: userData?.address[index]._id,
-            street: address.street,
-            city: address.city,
-            state: address.state,
-            postalCode: address.postalCode,
-            country: address.country,
-          })),
-        };
-
-        const response = await client.patch("auth/update-profile", transformedData, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-=======
     useEffect(() => {
         const fetchProfile = async () => {
             try {
+                const token = localStorage.getItem("accessToken");
+                if (!token) {
+                    throw new Error("Access token is missing");
+                }
+
                 const response = await client.get("auth/profile", {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
-                const data = await response.data;
-                if (response) {
-                    setuserData(data);
+
+                const data = response.data;
+                if (data) {
+                    setUserData(data);
                     reset({ ...data.user, address: data.address });
                 }
-                console.log("response", data);
-            } catch (error) {
-                console.error("Error fetching profile:", error);
+            } catch (error: any) {
+                console.error("Error fetching profile:", error.message);
+                toast.error("Error fetching profile. Please try again.");
             }
         };
 
         fetchProfile();
-    }, []);
+    }, [reset]);
+    console.log(" get Value: ", getValues());
+    const onSubmit = useMutation({
+        // console.log(" get Value: " getValues());
 
-    // console.log("getvalues", getValues());
-    // console.log("errors", errors);
->>>>>>> Stashed changes
+        mutationFn: async (data: Inputs) => {
+      
+            try {
+                const token = localStorage.getItem("accessToken");
+                if (!token) {
+                    throw new Error("Access token is missing");
+                }
 
-        toast.success(response.data.message);
-        return response.data;
-      } catch (error: any) {
-        console.error("Error updating profile:", error.message);
-        toast.error("Error updating profile. Please try again.");
-      }
-    },
-    onError: (error) => {
-      toast.error("Something went wrong. Please try again later.");
-      console.error(error);
-    },
-    onSuccess: (data) => {
-      console.log("Profile update successful:", data);
-    },
-  });
+                // Restructure the data to send it in the correct format
+                
+                const transformedData = {
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    phoneNumber: data.phoneNumber,
+                    dob: data.dob,
+                    profileImage:data.images[0],
+                    address: getValues().address.map((address: Address, index: number) => ({
+                        _id: userData?.address[index]._id,
+                        street: address.street,
+                        city: address.city,
+                        state: address.state,
+                        postalCode: address.postalCode,
+                        country: address.country,
+                    })),
+                };
+
+                const response = await client.patch("auth/update-profile", transformedData, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                toast.success(response.data.message);
+                return response.data;
+            } catch (error: any) {
+                console.error("Error updating profile:", error.message);
+                toast.error("Error updating profile. Please try again.");
+            }
+        },
+        onError: (error) => {
+            toast.error("Something went wrong. Please try again later.");
+            console.error(error);
+        },
+        onSuccess: (data) => {
+            console.log("Profile update successful:", data);
+        },
+    });
 
 
     // const updateUser = async (data: Inputs) => {
@@ -341,11 +291,7 @@ export default function ProfileSettingsPage() {
                     required
                 />
 
-<<<<<<< Updated upstream
-                {getValues().address.map((data: any, index:number) => (
-=======
-                {getValues().address.map((data, index) => (
->>>>>>> Stashed changes
+                {getValues().address.map((data: any, index: number) => (
                     <>
                         <div key={index} className=" md:col-span-2 lg:col-span-3">
                             Address {index + 1}
@@ -443,11 +389,15 @@ export default function ProfileSettingsPage() {
                         </div>
                     </>
                 ))}
-<<<<<<< Updated upstream
-=======
 
-                {/* <ImageUpload fieldName="profileImage" titleImage="test" /> */}
->>>>>>> Stashed changes
+                <ImageUpload
+                    text="Upload Images"
+                    maxFiles={1}
+                    setValue={setValue}
+                    errors={errors}
+                    fieldName="images"
+                    type="image"
+                />             
 
                 <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
                     <button type="button" className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors">

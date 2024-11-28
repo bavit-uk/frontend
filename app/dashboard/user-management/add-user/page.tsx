@@ -9,8 +9,10 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { client } from "@/app/_utils/axios";
+import { Loader } from "lucide-react";
 // Import custom components
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
+import ControlledSelect from "@/app/_components/Forms/ControlledSelect";
 
 // Define input types for form
 type Address = {
@@ -35,6 +37,7 @@ type Inputs = {
 
 export default function ProfileSettingsPage() {
     const [userData, setuserData] = useState<Inputs | null>(null);
+    const [userCategory, setUserCategory] = useState<string | null>(null);
     const router = useRouter();
     const {
         register,
@@ -52,27 +55,32 @@ export default function ProfileSettingsPage() {
 
     const onSubmit = useMutation({
         mutationFn: async (data: Inputs) => {
+            console.log("Mutation is right here");
             // Restructure the data into the desired format
             const transformedData = {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 phoneNumber: data.phoneNumber,
+                email: data.email,
+                password: data.password,
+                userType: "67403b90e189e381d5f1cdc4",
                 dob: data.dob,
-                address: getValues().address.map((address: Address, index: number) => ({
-                    _id: userData?.address[index]._id,
-                    street: address.street,
-                    city: address.city,
-                    state: address.state,
-                    postalCode: address.postalCode,
-                    country: address.country,
-                })),
+                address: [
+                    {
+                        label: "Home",
+                        street: data.street,
+                        city: data.city,
+                        state: data.state,
+                        postalCode: data.postalCode,
+                        country: data.country,
+                    },
+                ],
             };
-
             console.log("Transformed Data:", transformedData);
             // console.log("Token :", localStorage.getItem);
 
             // Send the transformed data to the server
-            const response = await client.patch("auth/update-profile", transformedData, {
+            const response = await client.post("user/", transformedData, {
                 // console.log( "transformedData" , transformedData)
                 headers: {
                     "Content-Type": "application/json",
@@ -85,8 +93,25 @@ export default function ProfileSettingsPage() {
         },
     });
 
-
-
+    useEffect(() => {
+        const fetchUserCategory = async () => {
+            try {
+                const response = await client.get("/user-category");
+                console.log("User Category:", response.data);
+                setUserCategory(response.data);
+            } catch (error) {
+                console.error("Error fetching user category:", error);
+            }
+        };
+        fetchUserCategory();
+    }, []);
+    
+    if (!userCategory)
+        return (
+            <div className="grid place-items-center h-svh">
+                <Loader className="animate-spin" size={64} />
+            </div>
+        );
     return (
         <div className="px-5">
             <div className="text-center mb-6">
@@ -243,6 +268,111 @@ export default function ProfileSettingsPage() {
                         input: "text-xl p-4 w-full",
                     }}
                     required
+                />
+
+                <ControlledInput
+                    label="Street"
+                    type="text"
+                    name={`street`}
+                    placeholder="Enter Street"
+                    errors={errors}
+                    register={register}
+                    rules={{}}
+                    classes={{
+                        input: "text-xl p-4 w-full",
+                    }}
+                    required
+                />
+
+                <ControlledInput
+                    label="City"
+                    type="text"
+                    name={`city`}
+                    placeholder="Enter City"
+                    errors={errors}
+                    register={register}
+                    rules={{
+                        pattern: {
+                            value: /^[a-z ,.'-]+$/i,
+                            message: "Invalid City",
+                        },
+                    }}
+                    classes={{
+                        input: "text-xl p-4 w-full",
+                    }}
+                    required
+                />
+
+                <ControlledInput
+                    label="State"
+                    type="text"
+                    name={`state`}
+                    placeholder="Enter State"
+                    errors={errors}
+                    register={register}
+                    rules={{
+                        pattern: {
+                            value: /^[a-z ,.'-]+$/i,
+                            message: "Invalid State",
+                        },
+                    }}
+                    classes={{
+                        input: "text-xl p-4 w-full",
+                    }}
+                    required
+                />
+
+                <ControlledInput
+                    label="Postal Code"
+                    type="text"
+                    name={`postalCode`}
+                    placeholder="Enter Zip Code"
+                    errors={errors}
+                    register={register}
+                    // rules={{
+                    //     pattern: {
+                    //         value: /^\d{5}(-\d{4})?$/,
+                    //         message: "Invalid Postal Code",
+                    //     },
+                    // }}
+                    classes={{
+                        input: "text-xl p-4 w-full",
+                    }}
+                    required
+                />
+
+                <ControlledInput
+                    label="Country"
+                    type="text"
+                    name={`country`}
+                    placeholder="Country"
+                    errors={errors}
+                    register={register}
+                    rules={{
+                        pattern: {
+                            value: /^[a-zA-Z\s,.'-]+$/,
+                            message: "Invalid Country",
+                        },
+                    }}
+                    classes={{
+                        input: "text-xl p-4 w-full",
+                    }}
+                    required
+                />
+
+                <ControlledSelect
+                    label="User Category"
+                    name="userCategory"
+                    options={
+                        userCategory.map((category) => ({
+                            value: category._id,
+                            label: category.role,
+                        }))
+                    }
+                    register={register}
+                    errors={errors}
+                    required
+                
                 />
 
                 <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
