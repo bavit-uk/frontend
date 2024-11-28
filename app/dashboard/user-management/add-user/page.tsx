@@ -11,21 +11,26 @@ import { toast } from "react-toastify";
 import { client } from "@/app/_utils/axios";
 // Import custom components
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
-import { cookies } from "next/headers";
-import { Loader } from "lucide-react";
 
 // Define input types for form
+type Address = {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    _id: string;
+};
+
 type Inputs = {
     firstName: string;
     lastName: string;
     phoneNumber: string;
     email: string;
-    dateOfBirth: string;
-    zipCode: string;
-    state: string;
-    city: string;
-    address: string;
+    dob: string;
     country: string;
+    _id: string;
+    address: Address[];
 };
 
 export default function ProfileSettingsPage() {
@@ -35,55 +40,58 @@ export default function ProfileSettingsPage() {
         register,
         handleSubmit,
         watch,
+        reset,
         getValues,
         formState: { errors },
     } = useForm<Inputs>({
         reValidateMode: "onChange",
     });
 
-
     console.log("getvalues", getValues());
     console.log("errors", errors);
+
     const onSubmit = useMutation({
         mutationFn: async (data: Inputs) => {
-            console.log("before sending req", data);
-            const response = await client.post("auth/update-profile", data, {
+            // Restructure the data into the desired format
+            const transformedData = {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                phoneNumber: data.phoneNumber,
+                dob: data.dob,
+                address: getValues().address.map((address: Address, index: number) => ({
+                    _id: userData?.address[index]._id,
+                    street: address.street,
+                    city: address.city,
+                    state: address.state,
+                    postalCode: address.postalCode,
+                    country: address.country,
+                })),
+            };
+
+            console.log("Transformed Data:", transformedData);
+            // console.log("Token :", localStorage.getItem);
+
+            // Send the transformed data to the server
+            const response = await client.patch("auth/update-profile", transformedData, {
+                // console.log( "transformedData" , transformedData)
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
             });
-            return response.data.data;
-        },
-
-        onSuccess: (data, inputs) => {
-            toast.success("You have successfully registered");
-            // dispatch(openModal({ mode: "login" }));
-        },
-        onError: (error: AxiosError<any>) => {
-            console.log(error.response?.data);
-            toast.error(error.response?.data?.message || "There was an error registering");
+            // console.log("Response:", response.data.message);
+            toast.success(response.data.message);
+            return response.data;
         },
     });
 
-    const updateUser = async (data: Inputs) => {
-        console.log("before sending req", data);
-        // data.email = data.email.toLowerCase();
-        // data.userType = "Customer";
-        const response = await client.post("auth/update-profile", data, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        });
-        return response.data.data;
-    }
+
 
     return (
         <div className="px-5">
             <div className="text-center mb-6">
-                <h2 className="font-bold text-2xl">Add User</h2>
-                <p className="text-gray-600">Sub Line Writtern Here</p>
+                <h2 className="font-bold text-2xl">Profile Settings</h2>
+                <p className="text-gray-600">Update Your Profile Information</p>
             </div>
 
             <form className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" onSubmit={handleSubmit((data) => onSubmit.mutate(data))} noValidate>
@@ -117,14 +125,13 @@ export default function ProfileSettingsPage() {
                     type="text"
                     name="lastName"
                     placeholder="Last Name"
-                    // value={userData.lastName}
                     errors={errors}
                     register={register}
                     rules={{
                         required: "Last Name is required",
                         pattern: {
-                            value: /^[a-z ,.'-]+$/i,
-                            message: "Invalid Last Name",
+                            value: /^[a-zA-Z\s,.'-]+$/,
+                            message: "Special characters not allowed",
                         },
                         minLength: {
                             value: 2,
@@ -141,8 +148,7 @@ export default function ProfileSettingsPage() {
                     label="Email"
                     type="email"
                     name="email"
-                    placeholder="Email"
-                
+                    placeholder="Enter Email"
                     errors={errors}
                     register={register}
                     rules={{
@@ -156,6 +162,7 @@ export default function ProfileSettingsPage() {
                         input: "text-xl px-4 py-3",
                     }}
                     required
+
                 />
 
                 <ControlledInput
@@ -179,7 +186,7 @@ export default function ProfileSettingsPage() {
                     required
                 />
 
-                {/* <ControlledInput
+                <ControlledInput
                     label="Password"
                     type="password"
                     name="password"
@@ -197,12 +204,30 @@ export default function ProfileSettingsPage() {
                         input: "text-xl px-4 py-3",
                     }}
                     required
-                /> */}
+                />
+
+                <ControlledInput
+                    label="Confirm Password"
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    errors={errors}
+                    register={register}
+                    rules={{
+                        required: "Confirm Password is required",
+                        validate: (value) =>
+                            value === getValues("password") || "Passwords do not match",
+                    }}
+                    classes={{
+                        input: "text-xl px-4 py-3",
+                    }}
+                    required
+                />
 
                 <ControlledInput
                     label="Date of Birth"
                     type="date"
-                    name="dateOfBirth"
+                    name="dob"
                     placeholder="Date of Birth"
                     // value={userData.dateOfBirth}
                     errors={errors}
@@ -220,107 +245,11 @@ export default function ProfileSettingsPage() {
                     required
                 />
 
-                <ControlledInput
-                    label="Street"
-                    type="text"
-                    name="street"
-                    placeholder="Enter Street"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                       
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
-                <ControlledInput
-                    label="City"
-                    type="text"
-                    name="city"
-                    placeholder="Enter City"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                        
-                        pattern: {
-                            value: /^[a-z ,.'-]+$/i,
-                            message: "Invalid City",
-                        },
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
-                <ControlledInput
-                    label="State"
-                    type="text"
-                    name="state"
-                    placeholder="Enter State"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                      
-                        pattern: {
-                            value: /^[a-z ,.'-]+$/i,
-                            message: "Invalid State",
-                        },
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
-                <ControlledInput
-                    label="Zip Code"
-                    type="text"
-                    name="zipCode"
-                    placeholder="Enter Zip Code"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                      
-                        pattern: {
-                            value: /^\d{5}(-\d{4})?$/,
-                            message: "Invalid Zip Code",
-                        },
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
-                <ControlledInput
-                    label="Country"
-                    type="text"
-                    name="country"
-                    placeholder="Country"
-                    errors={errors}
-                    register={register}
-                    rules={{
-                      
-                        pattern: {
-                            value: /^[a-zA-Z\s,.'-]+$/,
-                            message: "Invalid Country",
-                        },
-                    }}
-                    classes={{
-                        input: "text-xl p-4 w-full",
-                    }}
-                    required
-                />
-
                 <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
                     <button type="button" className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors">
                         Reset
                     </button>
-                    <button  type="submit" className="bg-red-500 rounded-md px-8 py-4 font-medium text-white hover:bg-red-600 transition-colors">
+                    <button type="submit" className="bg-red-500 rounded-md px-8 py-4 font-medium text-white hover:bg-red-600 transition-colors">
                         Add User
                     </button>
                 </div>
