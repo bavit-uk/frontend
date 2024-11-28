@@ -5,6 +5,7 @@ import { EyeIcon } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import Image from "next/image";
 
+
 interface DragNDropProps {
   setTitleImage: (image: any) => void; 
   data: { preview?: string; [key: string]: any }[]; 
