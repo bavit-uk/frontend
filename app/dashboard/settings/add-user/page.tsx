@@ -1,10 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import axios from "axios";
 
 const ProfilePage = () => {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        firstName:string;
+        lastName:string;
+        phoneNumber:string;
+        dob:string;
+        profileImage?:string;
+        oldPassword:string;
+        newPassword:string;
+        address: {
+            label:string;
+            street:string;
+            city:string;
+            state:string;
+            postalCode:string;
+            country:string;
+            isDefault:boolean;
+        }[]
+    }>({
         firstName: "",
         lastName: "",
         phoneNumber: "",
@@ -17,7 +35,7 @@ const ProfilePage = () => {
 
     const [userId, setUserId] = useState("");
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string|null>(null);
 
     // Fetch user data on page load (GET request to your backend API)
     useEffect(() => {
@@ -53,7 +71,7 @@ const ProfilePage = () => {
     }, []);
 
     // Handle changes in the form fields
-    const handleChange = (e) => {
+    const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
@@ -62,14 +80,30 @@ const ProfilePage = () => {
     };
 
     // Handle changes in address fields
-    const handleAddressChange = (index, e) => {
+    const handleAddressChange = (index:number, e:ChangeEvent<HTMLInputElement>) => {
         const { name, value, checked } = e.target;
-        const updatedAddresses = [...formData.address];
+        const updatedAddresses  = [...formData.address];
+
+        // label:string;
+        // street:string;
+        // city:string;
+        // state:string;
+        // postalCode:string;
+        // country:string;
+        // isDefault:boolean;
         if (name === "isDefault") {
             updatedAddresses[index][name] = checked;
-        } else {
+        } else if(
+            name === 'label' ||
+            name === "street" ||
+            name === "city" ||
+            name === "state" ||
+            name === "postalCode" ||
+            name === "country" 
+        ){
             updatedAddresses[index][name] = value;
         }
+     
         setFormData((prevData) => ({
             ...prevData,
             address: updatedAddresses,
@@ -96,7 +130,7 @@ const ProfilePage = () => {
     };
 
     // Remove an address
-    const handleRemoveAddress = (index) => {
+    const handleRemoveAddress = (index:number) => {
         const updatedAddresses = formData.address.filter((_, idx) => idx !== index);
         setFormData((prevData) => ({
             ...prevData,
@@ -105,7 +139,7 @@ const ProfilePage = () => {
     };
 
     // Handle form submit (PATCH request to your backend API)
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             console.log("address in submit form", formData.address);

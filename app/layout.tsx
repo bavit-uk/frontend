@@ -1,30 +1,22 @@
-<<<<<<< Updated upstream
-'use client';  // This tells Next.js that this component is a Client Component
-
-import { Provider } from 'react-redux';
-import { store } from './store/store'; // Ensure correct path to your store
-import localFont from 'next/font/local';
-import './globals.css';
-=======
-"use client"; // This tells Next.js that this component is a Client Component
-
+"use client"; 
 import { Provider } from "react-redux";
 import { store } from "./store/store"; // Ensure correct path to your store
 import localFont from "next/font/local";
 import "./globals.css";
 import queryClient from "./queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
->>>>>>> Stashed changes
+import { ToastContainer } from "react-toastify"; // Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import toastify styles
 
 const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
 });
 const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
 });
 
 export default function RootLayout({
@@ -33,21 +25,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Provider store={store}>
-<<<<<<< Updated upstream
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {children}
-        </body>
-=======
         <QueryClientProvider client={queryClient}>
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           >
             {children}
+            {/* Add ToastContainer here */}
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </body>
         </QueryClientProvider>
->>>>>>> Stashed changes
       </Provider>
     </html>
   );

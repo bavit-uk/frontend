@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
 import { adminsidebar } from "@/app/dashboard/_sidebarContents/adminSidebar";
-import { changeState, setcollapsed } from "@/app/store/slices/sidebar";
+import { changeState } from "@/app/store/slices/sidebar";
 import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
 export default function Sidebar() {

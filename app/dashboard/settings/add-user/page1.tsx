@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useAppDispatch } from "@/app/store/hook";
 import { useRouter } from "next/navigation";
 import { set, useForm } from "react-hook-form";
