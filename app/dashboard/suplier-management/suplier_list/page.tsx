@@ -1,193 +1,126 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client'; // Ensure this is a client component
 
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { Paperclip } from "lucide-react";
+import React, { useState, useEffect, useCallback } from 'react';
+import { client } from '@/app/_utils/axios';  // Assuming this is your Axios client
+import { Loader, Button, Group } from '@mantine/core'; // Importing Mantine Button and Group components
+import { Eye, Edit, Trash } from 'tabler-icons-react'; // Import icons from Tabler Icons
+import DynamicTable from '@/app/_components/Table/DynamicTable';
+import axios from 'axios';
 
-interface SupplierFormData {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  category: string;
-  documents: FileList | null;
-}
+const ViewUserPage = () => {
+  const [users, setUsers] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
 
-export default function page() {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<SupplierFormData>();
-  const [dragActive, setDragActive] = useState(false);
-
-  const onSubmit = (data: SupplierFormData) => {
-    console.log(data);
-    // Handle form submission
-  };
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await client.get('/supplier');  // Assuming your API endpoint is /user
+      console.log('API Response:', response.data);
+      setUsers(response.data); // Assuming response.data contains the array of users
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Use useCallback for handleDelete to prevent unnecessary re-creations of the function
+  const handleDelete = useCallback(async (row: any) => {
+    console.log('Row Data:', row._id);
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use environment variable
+      const link = `${backendUrl}/supplier/${row._id}`;
+      console.log("Delete Link:", link);
+      await axios.delete(link);
+      setUsers((prevUsers: any) => {
+        return {
+          ...prevUsers,
+          data: prevUsers.data.filter((user: any) => user._id !== row._id),
+        };
+      });
+      alert("Deleteddddd")
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  }, []);
+
+  // Fetch users data
+  useEffect(() => {
+    fetchUsers();
+  }, [handleDelete]);
+
+   // Empty dependency array means the function won't change across re-renders
+
+  // Updated columns array to match DynamicTable's expected structure
+  const columns = [
+    {
+      label: 'Name',
+      key: 'firstName',
+      render: (_: string, row: { firstName: string; lastName: string }) => {
+        return <span>{row?.firstName} {row?.lastName}</span>;
+      }, // Combine first and last name
+      sortable: true,
+    },
+    {
+      label: 'Email',
+      key: 'email',
+      render: (_: string, row: { email: string }) => <span>{row?.email}</span>, // Directly render email
+      sortable: true,
+    },
+    {
+      label: 'Status',
+      key: 'status',
+      render: (_: string, row: { isBlocked: boolean }) => <span>{row?.isBlocked ? 'Blocked' : 'Unblock'}</span>, // Check if user is blocked
+      sortable: true,
+    },
+    {
+      label: 'Action',
+      key: 'action',
+      render: (value: any, row: any) => (
+        <Group>
+          <Button variant="outline" size="xs" onClick={() => handleView(row)} title="View">
+            <Eye size={16} />
+          </Button>
+          <Button variant="outline" size="xs" onClick={() => handleEdit(row)} title="Edit">
+            <Edit size={16} />
+          </Button>
+          <Button variant="outline" size="xs" color="red" onClick={() => handleDelete(row)} title="Delete">
+            <Trash size={16} />
+          </Button>
+        </Group>
+      ),
+      sortable: false,  // Actions column generally does not need sorting
+    },
+  ];
+
+  // Handler functions (optional)
+  const handleView = (row: any) => {
+    console.log('Row Data:', row);
+    // Implement your view logic here
+  };
+
+  const handleEdit = (row: any) => {
+    console.log('Row Data:', row);
+    // Implement your edit logic here
+  };
+
   return (
-    <div className="w-full max-w-6xl mx-auto p-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">Add Supplier</h1>
-        <p className="text-gray-600">Fill in the data to add Supplier</p>
+    <div className="px-5">
+      <div className="text-center mb-6">
+        <h2 className="font-bold text-2xl">View Users</h2>
+        <p className="text-gray-600">Manage user details and their roles</p>
       </div>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white rounded-lg shadow-sm p-6 space-y-6"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Supplier Name */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Supplier Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              {...register("name", { required: "Supplier name is required" })}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter Supplier Name"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
-            )}
-          </div>
-
-          {/* Category */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Supplier Category <span className="text-red-500">*</span>
-            </label>
-            <select
-              {...register("category", { required: "Category is required" })}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select a category</option>
-              <option value="electronics">PC</option>
-              <option value="clothing">Laptop</option>
-              <option value="food">Custom PC</option>
-              <option value="other">Other</option>
-            </select>
-            {errors.category && (
-              <p className="text-red-500 text-sm">{errors.category.message}</p>
-            )}
-          </div>
-
-          {/* Email */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Email <span className="text-red-500">*</span>
-            </label>
-            <input
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address",
-                },
-              })}
-              type="email"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter Email Address"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-          </div>
-
-          {/* Phone */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Phone <span className="text-red-500">*</span>
-            </label>
-            <input
-              {...register("phone", {
-                required: "Phone number is required",
-                pattern: {
-                  value: /^\+?[\d\s-]+$/,
-                  message: "Invalid phone number",
-                },
-              })}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="+1 (999) 999-9999"
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-sm">{errors.phone.message}</p>
-            )}
-          </div>
-
-          {/* Address */}
-          <div className="space-y-2 md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Address <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              {...register("address", { required: "Address is required" })}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={3}
-              placeholder="Enter Complete Address"
-            />
-            {errors.address && (
-              <p className="text-red-500 text-sm">{errors.address.message}</p>
-            )}
-          </div>
-
-          {/* Document Upload */}
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Upload Documents
-            </label>
-            <div
-              className={`border-2 border-dashed rounded-lg p-6 ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrag}
-            >
-              <div className="flex flex-col items-center">
-                <Paperclip className="h-10 w-10 text-gray-400 mb-3" />
-                <p className="text-gray-600 text-center">
-                  Drag and drop a file or click to select a file to upload
-                </p>
-                <input
-                  {...register("documents")}
-                  type="file"
-                  className="mt-4"
-                  multiple
-                />
-              </div>
-            </div>
-          </div>
+      {loading ? (
+        <div className="text-center py-4">
+          <Loader size="xl" />
         </div>
-
-        <div className="flex justify-end space-x-4 pt-4">
-          <button
-            type="button"
-            onClick={() => reset()}
-            className="px-4 py-2 border rounded-md hover:bg-gray-50"
-          >
-            Reset
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          >
-            Add Supplier
-          </button>
-        </div>
-      </form>
+      ) : (
+        <DynamicTable columns={columns} data={users.data || []} caption="User Table" />
+      )}
     </div>
   );
-}
+};
+
+export default ViewUserPage;
