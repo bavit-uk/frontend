@@ -2,7 +2,7 @@
 'use client';
 
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableHeader,
@@ -10,19 +10,23 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  // TableCaption,
 } from '../ui/table';
-
 import { IoIosArrowRoundDown } from 'react-icons/io';
 import { IoIosArrowRoundUp } from 'react-icons/io';
 import { BsArrowsVertical } from 'react-icons/bs';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext } from  '../ui/pagination';
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from '../ui/pagination';
 
 interface Column {
   label: string;
   key: string;
-  render?: (value: any, row: any, index:any) => JSX.Element;
+  render?: (value: any, row: any) => JSX.Element;
   sortable?: boolean;
 }
 
@@ -33,27 +37,19 @@ interface TableProps {
 }
 
 const DynamicTable: React.FC<TableProps> = ({ columns, data }) => {
-  const [sortedData, setSortedData] = useState(data);
-  const [filteredData, setFilteredData] = useState(data); // For search functionality
+  const [sortedData, setSortedData] = useState<Record<string, any>[]>([]);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // Default to 5 rows per page
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Default to 5 rows per page
 
-  const [searchQuery, setSearchQuery] = useState(''); // Search query state
-
-  React.useEffect(() => {
-    // Filter data whenever the search query changes
-    const lowercasedQuery = searchQuery.toLowerCase();
-    const newFilteredData = sortedData.filter(row =>
-      columns.some(col => {
-        const cellValue = row[col.key];
-        return cellValue?.toString().toLowerCase().includes(lowercasedQuery);
-      })
-    );
-    setFilteredData(newFilteredData);
-    setCurrentPage(1); // Reset to the first page after search
-  }, [searchQuery, sortedData, columns]);
-
+  // Ensure sortedData is set as an array and data is properly passed
+  useEffect(() => {
+    if (Array.isArray(data)) {
+      setSortedData(data);
+    } else {
+      setSortedData([]);
+    }
+  }, [data]);
 
   const sortData = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -61,7 +57,7 @@ const DynamicTable: React.FC<TableProps> = ({ columns, data }) => {
       direction = 'desc';
     }
 
-    const sorted = [...filteredData].sort((a, b) => {
+    const sorted = [...sortedData].sort((a, b) => {
       if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
       if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
       return 0;
@@ -69,16 +65,19 @@ const DynamicTable: React.FC<TableProps> = ({ columns, data }) => {
 
     setSortedData(sorted);
     setSortConfig({ key, direction });
+    setCurrentPage(1); // Reset to first page after sorting
   };
 
   // Calculate pagination data
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, filteredData.length); // To avoid exceeding the total rows
-  const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const endIndex = Math.min(startIndex + itemsPerPage, sortedData.length); // To avoid exceeding the total rows
+  const paginatedData = Array.isArray(sortedData) ? sortedData.slice(startIndex, endIndex) : [];
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -88,80 +87,69 @@ const DynamicTable: React.FC<TableProps> = ({ columns, data }) => {
 
   return (
     <div className='border-[1px] border-[rgb(118, 118, 118)] rounded-lg'>
-       {/* Search Input */}
-       <div className='p-4'>
-        <input
-          type='text'
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder='Search...'
-          className='border p-2 rounded w-full'
-        />
-      </div>
-      <Table className=' '>
+      <Table>
         {/* {caption && <TableCaption className=''>{caption}</TableCaption>} */}
         <TableHeader className='font-bold'>
           <TableRow>
-            {columns.map((col, idx) => {
-         // Calculate minimum width based on character count (approx 0.6rem per character)
-              const minWidth = `${col.label.length * 0.6 +1}rem`;
-              return (
-                <TableHead
+            {columns.map((col, idx) => (
+              <TableHead
                 key={idx}
-                style={{ minWidth }}
                 className='cursor-pointer text-white primary-bg hover:bg-red-500'
                 onClick={() => col.sortable !== false && sortData(col.key)}
-                >
+              >
                 <div className='flex items-center'>
                   {col.label}
                   {col.sortable !== false && sortConfig?.key === col.key ? (
-                    sortConfig.direction === 'asc' ? <IoIosArrowRoundUp /> : <IoIosArrowRoundDown />
+                    sortConfig.direction === 'asc' ? (
+                      <IoIosArrowRoundUp />
+                    ) : (
+                      <IoIosArrowRoundDown />
+                    )
                   ) : col.sortable !== false ? (
                     <BsArrowsVertical />
                   ) : null}
                 </div>
               </TableHead>
-            )
-          }
-
-            )}
+            ))}
           </TableRow>
         </TableHeader>
         <TableBody>
-  {paginatedData.length === 0 ? (
-    <TableRow>
-      <TableCell colSpan={columns.length} className='text-center'>
-        No records found
-      </TableCell>
-    </TableRow>
-  ) : (
-    paginatedData.map((row, rowIndex) => (
-      <TableRow key={rowIndex} className='rounded-lg'>
-        {columns.map((col, colIndex) => (
-          <TableCell key={colIndex}>
-            {col.render ? col.render(row[col.key], row, startIndex+rowIndex) : row[col.key]}
-          </TableCell>
-        ))}
-      </TableRow>
-    ))
-  )}
-</TableBody>
+          {paginatedData.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className='text-center'>
+                No records found
+              </TableCell>
+            </TableRow>
+          ) : (
+            paginatedData.map((row, rowIndex) => (
+              <TableRow key={rowIndex} className='rounded-lg'>
+                {columns.map((col, colIndex) => (
+                  <TableCell key={colIndex}>
+                    {col.render ? col.render(row[col.key], row) : row[col.key]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
       </Table>
 
       {/* Pagination */}
-      <Pagination  className=' border-t-[1px] p-2 flex items-center justify-between '>
-
-        {/* total number of rows  */}
-        <div className='text-[12px] '>
+      <Pagination className='border-t-[1px] p-2 flex items-center justify-between'>
+        {/* Total number of rows */}
+        <div className='text-[12px]'>
           {startIndex + 1} - {endIndex} / {sortedData.length} {/* Display the current range and total items */}
         </div>
 
         <PaginationContent className='text-[12px] cursor-pointer'>
-          <PaginationPrevious className='text-[12px]' onClick={() => handlePageChange(currentPage - 1)} isDisabled={currentPage === 1} />
+          <PaginationPrevious
+            className='text-[12px]'
+            onClick={() => handlePageChange(currentPage - 1)}
+            isDisabled={currentPage === 1}
+          />
           {Array.from({ length: totalPages }, (_, i) => (
             <PaginationItem className='text-[12px]' key={i}>
               <PaginationLink
-              className=''
                 isActive={i + 1 === currentPage}
                 onClick={() => handlePageChange(i + 1)}
               >
@@ -169,10 +157,13 @@ const DynamicTable: React.FC<TableProps> = ({ columns, data }) => {
               </PaginationLink>
             </PaginationItem>
           ))}
-          <PaginationNext onClick={() => handlePageChange(currentPage + 1)} isDisabled={currentPage === totalPages} />
+          <PaginationNext
+            onClick={() => handlePageChange(currentPage + 1)}
+            isDisabled={currentPage === totalPages}
+          />
         </PaginationContent>
 
-        {/* rows per page  */}
+        {/* Rows per page */}
         <div className='flex text-[12px] items-center'>
           <span className='mr-2'>Rows per page:</span>
           <select
@@ -187,7 +178,6 @@ const DynamicTable: React.FC<TableProps> = ({ columns, data }) => {
             <option value={25}>25</option>
           </select>
         </div>
-
       </Pagination>
     </div>
   );

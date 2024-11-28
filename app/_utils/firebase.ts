@@ -58,13 +58,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC9QNjFdjNfhutMxad32cHXvvajI5t46CY",
-  authDomain: "bav-it-uk.firebaseapp.com",
-  projectId: "bav-it-uk",
-  storageBucket: "bav-it-uk.firebasestorage.app",
-  messagingSenderId: "18638262840",
-  appId: "1:18638262840:web:97a273faae5ecd85ed8ccd",
-  measurementId: "G-KHX22YP1B9",
+  apiKey: "AIzaSyCJjAtRfmCOgfLfWsuVNgXG-gvohCWb6aI",
+  authDomain: "bav-it-770be.firebaseapp.com",
+  projectId: "bav-it-770be",
+  storageBucket: "bav-it-770be.firebasestorage.app",
+  messagingSenderId: "802578740286",
+  appId: "1:802578740286:web:d118244a5097dcc3dbcd6f",
+  measurementId: "G-V3DHFYFNF6"
 };
 
 // Initialize Firebase

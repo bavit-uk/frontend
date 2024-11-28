@@ -16,12 +16,12 @@ import {
   TrashOff,
   UserOff,
 } from "tabler-icons-react"; // Import UserOff icon
-import { routeNames } from "../../Routes/routeNames";
-import { backendUrl } from "../../constants/constants";
-import { UserContext } from "../../contexts/UserContext";
+// import { routeNames } from "../../Routes/routeNames";
+
+// import { UserContext } from "../../contexts/UserContext";
 import DeleteModal from "../DeleteModal";
-import ViewModal from "../ViewModal";
-import { Loader } from "@mantine/core";
+import ViewModal from "../ViewModal"
+import { Loader } from "@mantine/core"
 
 const ActionIcons = ({
   rowData,
@@ -47,128 +47,47 @@ const ActionIcons = ({
 
   //to edit
   const handleEdit = () => {
-    switch (type) {
-      case "service":
-        navigate(routeNames.general.addService, {
-          state: {
-            isUpdate: true,
-            data: rowData,
-          },
-        });
-        break;
-      case "project":
-        navigate(routeNames.general.addProject, {
-          state: {
-            isUpdate: true,
-            data: rowData,
-          },
-        });
-        break;
-      case "product":
-        navigate(routeNames.general.addProduct, {
-          state: {
-            isUpdate: true,
-            data: rowData,
-          },
-        });
-        break;
-      case "jobs":
-        navigate(routeNames.general.addJob, {
-          state: {
-            isUpdate: true,
-            data: rowData,
-          },
-        });
-        break;
-      case "teamMember":
-        navigate(routeNames.general.addTeam, {
-          state: {
-            isUpdate: true,
-            data: rowData,
-          },
-        });
-        break;
-      case "blog":
-        navigate(routeNames.general.addBlog, {
-          state: {
-            isUpdate: true,
-            data: rowData,
-          },
-        });
-        break;
-      case "testimonial":
-        navigate(routeNames.general.addTestimonial, {
-          state: {
-            isUpdate: true,
-            data: rowData,
-          },
-        });
-        break;
-      case "Quote":
-        navigate(routeNames.general.viewQuotes, {
-          state: {
-            isUpdate: true,
-            data: rowData,
-          },
-        });
-        break;
-        case "jobsCategory":
-          navigate(routeNames.general.addJobCategory, {
-            state: {
-              isUpdate: true,
-              data: rowData,
-            },
-          });
-          break;
-    }
+    // switch (type) {
+    //   case "service":
+    //     navigate(routeNames.general.addService, {
+    //       state: {
+    //         isUpdate: true,
+    //         data: rowData,
+    //       },
+    //     });
+    //     break;
+    //   case "project":
+    //     navigate(routeNames.general.addProject, {
+    //       state: {
+    //         isUpdate: true,
+    //         data: rowData,
+    //       },
+    //     });
+    //     break;
+  
+    // }
   };
 
   //to delete
+
+  
+  // Update both mutations to use the backend URL from the environment variable
   const handleDelete = useMutation(
     async () => {
-      const link = backendUrl + `/api/v1/${type}/${rowData._id}`;
-      return axios.delete(link, {
-        headers: {
-          authorization: `Bearer ${user.token}`,
-        },
-      });
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use environment variable
+      const link = `${backendUrl}/api/user/${rowData._id}`;
+  
+      return axios.delete(link);
     },
-    {
-      onSuccess: (res) => {
-        setOpenDelete(false);
-        showNotification({
-          title: "Success",
-          message: `${type} Deleted Successfully`,
-          color: "green",
-        });
-        if (type === "service") queryClient.invalidateQueries("fetchServices");
-        else if (type === "project")
-          queryClient.invalidateQueries("fetchProjects");
-        else if (type === "product")
-          queryClient.invalidateQueries("fetchProducts");
-        else if (type === "jobs") queryClient.invalidateQueries("fetchJobs");
-        else if (type === "teamMember")
-          queryClient.invalidateQueries("fetchTeamMembers");
-        else if (type === "blog") queryClient.invalidateQueries("fetchBlogs");
-        else if (type === "testimonial")queryClient.invalidateQueries("fetchTestimonials");
-        else if (type === "jobsCategory")queryClient.invalidateQueries("fetchJobsCategory");
-        else if (type === "quote") queryClient.invalidateQueries("fetchQuotes");
-      },
-      onError: (res) => {
-        showNotification({
-          title: "Error",
-          message: res?.data?.message,
-          color: "red",
-        });
-        setOpenDelete(false);
-      },
-    }
+   
   );
-
+  
   // To toggle the 'left' status
   const handleToggleLeft = useMutation(
     async () => {
-      const link = backendUrl + `/api/v1/${type}/${rowData._id}/left`;
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use environment variable
+      const link = `${backendUrl}/api/v1/${type}/${rowData._id}/left`;
+  
       return axios.put(
         link,
         { left: !rowData.left }, // Toggle left status here
@@ -199,6 +118,7 @@ const ActionIcons = ({
       },
     }
   );
+  
 
   return (
     <Flex gap={5}>

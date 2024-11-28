@@ -6,15 +6,9 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { client } from "@/app/_utils/axios";
 import ControlledInput from "@/app/_components/Forms/ControlledInput";
-<<<<<<< Updated upstream
 import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 
-=======
-import { cookies } from "next/headers";
-import ImageUpload from "@/app/_components/ImageUpload/ImageUpload";
-import { Loader } from "lucide-react";
->>>>>>> Stashed changes
 // Define input types for form
 type Address = {
   street: string;
@@ -26,7 +20,6 @@ type Address = {
 };
 
 type Inputs = {
-<<<<<<< Updated upstream
   firstName: string;
   lastName: string;
   phoneNumber: string;
@@ -39,31 +32,6 @@ type Inputs = {
 
 export default function ProfileSettingsPage() {
   const [userData, setUserData] = useState<Inputs | null>(null);
-=======
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    dob: string;
-    country: string;
-    _id: string;
-    address: Address[];
-};
-
-export default function ProfileSettingsPage() {
-    const [userData, setuserData] = useState<Inputs | null>(null);
-    const router = useRouter();
-    const {
-        register,
-        handleSubmit,
-        watch,
-        reset,
-        getValues,
-        formState: { errors },
-    } = useForm<Inputs>({
-        reValidateMode: "onChange",
-    });
->>>>>>> Stashed changes
 
   const {
     register,
@@ -83,7 +51,6 @@ export default function ProfileSettingsPage() {
           throw new Error("Access token is missing");
         }
 
-<<<<<<< Updated upstream
         const response = await client.get("auth/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -134,32 +101,6 @@ export default function ProfileSettingsPage() {
             Authorization: `Bearer ${token}`,
           },
         });
-=======
-    useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await client.get("auth/profile", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                    },
-                });
-                const data = await response.data;
-                if (response) {
-                    setuserData(data);
-                    reset({ ...data.user, address: data.address });
-                }
-                console.log("response", data);
-            } catch (error) {
-                console.error("Error fetching profile:", error);
-            }
-        };
-
-        fetchProfile();
-    }, []);
-
-    // console.log("getvalues", getValues());
-    // console.log("errors", errors);
->>>>>>> Stashed changes
 
         toast.success(response.data.message);
         return response.data;
@@ -341,11 +282,7 @@ export default function ProfileSettingsPage() {
                     required
                 />
 
-<<<<<<< Updated upstream
                 {getValues().address.map((data: any, index:number) => (
-=======
-                {getValues().address.map((data, index) => (
->>>>>>> Stashed changes
                     <>
                         <div key={index} className=" md:col-span-2 lg:col-span-3">
                             Address {index + 1}
@@ -443,11 +380,6 @@ export default function ProfileSettingsPage() {
                         </div>
                     </>
                 ))}
-<<<<<<< Updated upstream
-=======
-
-                {/* <ImageUpload fieldName="profileImage" titleImage="test" /> */}
->>>>>>> Stashed changes
 
                 <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
                     <button type="button" className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors">
