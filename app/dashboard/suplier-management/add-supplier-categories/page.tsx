@@ -30,7 +30,14 @@ export default function AddSupplierCategory() {
     console.log("getValues", getValues());
     const onSubmit = useMutation({
         mutationFn: async (data: Inputs) => {
-            const response = await client.post("/supplier-category", data, {
+            const transformedData = {
+                ...data,
+                images: data.images && data.images.length > 0 
+                    ? data.images[0]  // Take the first image URL
+                    : null  // or null if no image
+            };
+
+            const response = await client.post("/supplier-category", transformedData, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -102,6 +109,7 @@ export default function AddSupplierCategory() {
                     fieldName="images"
                     type="image"
                 />
+                
 
 
                 {/* Submit Buttons */}
