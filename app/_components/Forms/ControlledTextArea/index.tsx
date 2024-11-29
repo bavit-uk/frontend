@@ -46,40 +46,40 @@ const ControlledTextArea: ForwardRefRenderFunction<
   },
   ref
 ) => {
-  if (!props.name) throw new Error("ControlledInput must have a name prop");
-  return (
-    <div className={classes?.root || ""}>
-      {label && (
-        <label
-          htmlFor={props.name}
-          className={cn("block text-sm font-light", classes?.label)}
-        >
-          {label}
-          {required && <span className="ml-1 text-red-500">*</span>}
-        </label>
-      )}
-      <textarea
-        {...props}
-        {...register(props.name, rules)}
-        className={cn(
-          override
-            ? ""
-            : "w-full rounded-md border border-gray-300 p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary",
-          classes?.textarea
+    if (!props.name) throw new Error("ControlledInput must have a name prop");
+    return (
+      <div className={classes?.root || ""}>
+        {label && (
+          <label
+            htmlFor={props.name}
+            className={cn("block text-sm font-light", classes?.label)}
+          >
+            {label}
+            {required && <span className="ml-1 text-red-500">*</span>}
+          </label>
         )}
-        ref={ref}
-        rows={props?.rows || 4}
-      />
-      {props.name &&
-        errors &&
-        errors[props.name] &&
-        errors[props.name]?.message && (
-          <span className={`text-xs font-light text-red-500 ${classes?.error}`}>
-            {errors[props.name]?.message?.toString()}
-          </span>
-        )}
-    </div>
-  );
-};
+        <textarea
+          {...props}
+          {...register(props.name, rules)}
+          className={cn(
+            override
+              ? ""
+              : "w-full rounded-md border border-gray-300 p-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary",
+            classes?.textarea
+          )}
+          ref={ref}
+          rows={props?.rows || 4}
+        />
+        {props.name &&
+          errors &&
+          errors[props.name] &&
+          errors[props.name]?.message && (
+            <span className={`text-xs font-light text-red-500 ${classes?.error}`}>
+              {errors[props.name]?.message?.toString()}
+            </span>
+          )}
+      </div>
+    );
+  };
 
 export default React.forwardRef(ControlledTextArea);

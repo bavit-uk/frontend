@@ -60,7 +60,7 @@ export const AddProject = () => {
   }, [state]);
 
   //categories
-  const { status } = useQuery(
+  const {  } = useQuery(
     "fetchServices",
     () => {
       return axios.get(backendUrl + "/api/v1/web/services", {
