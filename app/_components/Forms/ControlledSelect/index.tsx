@@ -42,8 +42,8 @@ type SelectProps = FormControlledSelect;
 const ControlledSelect: ForwardRefRenderFunction<
   HTMLSelectElement,
   SelectProps
-> = (props, ref) => {
-  
+> = (props) => {
+
   const {
     register,
     classes,
@@ -57,6 +57,7 @@ const ControlledSelect: ForwardRefRenderFunction<
     onManualClick,
   } = props;
 
+  
   if (!props.name) throw new Error("ControlledInput must have a name prop");
 
   return (
@@ -104,19 +105,21 @@ const ControlledSelect: ForwardRefRenderFunction<
         className={cn(
           override
             ? ""
-            : "w-full rounded-md border border-gray-300 p-2 font-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
+            : "w-full rounded-md border border-gray-300  p-2 font-light  focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
           classes?.select
         )}
-        ref={ref}
+
       >
-        <option value="" disabled>
+        <option className="" value="" disabled>
           {placeholder || "Select an option"}
         </option>
-        {options.map((option) => (
+        {options.map((option) =>
+        (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
-        ))}
+        )
+        )}
       </select>
 
       {props.name &&
