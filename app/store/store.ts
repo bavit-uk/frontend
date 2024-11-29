@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import sidebarReducer from './slices/sidebar'
 import userReducer from "./slices/userPermissions"
-import userPermissions from './slices/userPermissions'
+// import userPermissions from './slices/userPermissions'
 export const store = configureStore({
   reducer: {
     sidebar: sidebarReducer,

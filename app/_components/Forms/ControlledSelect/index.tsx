@@ -134,4 +134,4 @@ const ControlledSelect: ForwardRefRenderFunction<
   );
 };
 
-export default React.forwardRef(ControlledSelect);
+export default ControlledSelect;

@@ -9,7 +9,7 @@ interface NavItem {
     children?: NavItem[];
 }
 
-
+// ! Make sure these permissions match exactly with backend permissions
 export const adminsidebar: NavItem[] = [
     { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" , permission: "DASHBOARD"},
     {
@@ -31,7 +31,7 @@ export const adminsidebar: NavItem[] = [
         href: "/supliermanagement",
         permission:"MANAGE_SUPPLIERS",
         children: [
-            { title: "Add Supplier", icon: Users, href: "/dashboard/suplier-management/add_supplier" , permission:"ADD_SUPLLIERS", },
+            { title: "Add Supplier", icon: Users, href: "/dashboard/suplier-management/add_supplier" , permission:"ADD_SUPPLIERS", },
             { title: "View Supplier", icon: Users, href: "/dashboard/suplier-management/suplier_list" , permission:"VIEW_SUPPLIERS", },
             { title: " Add Supplier Category", icon: Users, permission:"ADD_SUPPLIERS_CATEGORY",  href: "/dashboard/suplier-management/add-supplier-categories" },
         ],

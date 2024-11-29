@@ -96,7 +96,7 @@ export default function ProfileSettingsPage() {
                 },
             });
             // console.log("Response:", response.data.message);
-            toast.success(response.data.message);
+            toast.success("User Created");
             reset();
             return response.data;
         },

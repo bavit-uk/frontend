@@ -9,6 +9,8 @@ import { useAppSelector, useAppDispatch } from "@/app/store/hook";
 import { client } from "@/app/_utils/axios";
 import { setUserPermissions } from "@/app/store/slices/userPermissions";
 import { changeState } from "@/app/store/slices/sidebar";
+import { AxiosError } from 'axios'; // Import the AxiosError type from axios
+import { toast } from "react-toastify";
 
 export default function Sidebar() {
   const collapsed = useAppSelector((state) => state.sidebar.collapsed);
@@ -34,7 +36,6 @@ export default function Sidebar() {
 
   const filteredSidebar = filterSidebar(adminsidebar);
 
-  // Fetch permissions on component mount
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
@@ -42,13 +43,39 @@ export default function Sidebar() {
           headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
         });
         const data = response.data.user.userType.permissions;
+        console.log("permissions : ", data);
         dispatch(setUserPermissions(data));
       } catch (error) {
-        console.error("Failed to fetch permissions:", error);
+        console.log("This error is inside fetch permission catch");
+
+        // Assert the error type to AxiosError
+        if ((error as AxiosError).response) {
+          const axiosError = error as AxiosError;
+
+          // Check if the error is a 401 Unauthorized error
+          if (axiosError.response?.status === 401) {
+            console.error("Unauthorized: Redirecting to login...");
+            localStorage.removeItem("accessToken");
+            toast.info("Session Expired. Please log in again.");
+            window.location.href = "/login"; // Redirect to login page
+          } else {
+            console.error("Failed to fetch permissions:", axiosError);
+          }
+        } else {
+          console.error("An unknown error occurred:", error);
+        }
       }
     };
+
     fetchPermissions();
   }, [dispatch]);
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken"); // Remove token from localStorage
+    toast.success("Logged out successfully"); // Show success message
+    window.location.href = "/login"; // Redirect to login page
+  };
 
   return (
     <div className="relative min-h-screen">
@@ -68,9 +95,7 @@ export default function Sidebar() {
             <div key={item.href}>
               {item.children ? (
                 <button
-                  className={`group flex w-full items-center rounded-md px-3 py-2 text-base font-medium text-white transition-colors ${
-                    pathname === item.href ? "bg-[#ff6b00] hover:bg-[#ff6b00]/90" : "hover:bg-white/10"
-                  } ${collapsed ? "justify-center" : "justify-between"}`}
+                  className={`group flex w-full items-center rounded-md px-3 py-2 text-base font-medium text-white transition-colors ${pathname === item.href ? "bg-[#ff6b00] hover:bg-[#ff6b00]/90" : "hover:bg-white/10"} ${collapsed ? "justify-center" : "justify-between"}`}
                   onClick={() => toggleSubmenu(item.href)}
                 >
                   <div className="flex items-center gap-4">
@@ -84,9 +109,7 @@ export default function Sidebar() {
               ) : (
                 <Link href={item.href}>
                   <div
-                    className={`group flex w-full items-center rounded-md px-3 py-2 text-base font-medium text-white transition-colors ${
-                      pathname === item.href ? "bg-[#ff6b00] hover:bg-[#ff6b00]/90" : "hover:bg-white/10"
-                    } ${collapsed ? "justify-center" : "justify-between"}`}
+                    className={`group flex w-full items-center rounded-md px-3 py-2 text-base font-medium text-white transition-colors ${pathname === item.href ? "bg-[#ff6b00] hover:bg-[#ff6b00]/90" : "hover:bg-white/10"} ${collapsed ? "justify-center" : "justify-between"}`}
                   >
                     <div className="flex items-center gap-4">
                       <item.icon className={`h-5 w-5 ${collapsed ? "h-6 w-6" : ""}`} />
@@ -101,9 +124,7 @@ export default function Sidebar() {
                   {item.children.map((child) => (
                     <Link key={child.href} href={child.href}>
                       <div
-                        className={`group flex w-full items-center rounded-md px-2 py-2 text-sm font-medium text-white transition-colors ${
-                          pathname === child.href ? "bg-[#ff6b00] hover:bg-[#ff6b00]/90" : "hover:bg-white/10"
-                        }`}
+                        className={`group flex w-full items-center rounded-md px-2 py-2 text-sm font-medium text-white transition-colors ${pathname === child.href ? "bg-[#ff6b00] hover:bg-[#ff6b00]/90" : "hover:bg-white/10"}`}
                       >
                         {child.title}
                       </div>
@@ -114,6 +135,16 @@ export default function Sidebar() {
             </div>
           ))}
         </nav>
+
+        {/* Logout Button at the bottom */}
+        <div className="mt-auto">
+          <button
+            onClick={handleLogout}
+            className="group flex w-full items-center rounded-md px-3 py-2 text-base font-medium text-white hover:bg-red-600 transition-colors"
+          >
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
     </div>
   );
