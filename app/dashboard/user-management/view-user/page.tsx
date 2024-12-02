@@ -42,23 +42,38 @@ const ViewUserPage = () => {
 
   // Use useCallback for handleDelete to prevent unnecessary re-creations of the function
   const handleDelete = useCallback(async (row: any) => {
-    // console.log("Row Data:", row._id);
+    // Show confirmation prompt before deleting
+    const isConfirmed = window.confirm("Are you sure you want to delete this user?");
+  
+    if (!isConfirmed) {
+      // If the admin cancels, do not proceed with deletion
+      console.log("User deletion canceled");
+      return;
+    }
+  
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use environment variable
       const link = `${backendUrl}/user/${row._id}`;
-      // console.log("Delete Link:", link);
+  
+      // Perform the delete action
       await axios.delete(link);
+  
+      // Update state to remove the deleted user from the list
       setUsers((prevUsers: any) => {
         return {
           ...prevUsers,
           data: prevUsers.data.filter((user: any) => user._id !== row._id),
         };
       });
-      alert("Deleteddddd");
+  
+      // Show success message
+      alert("User Deleted");
     } catch (error) {
+      // Log any errors that occur during the deletion process
       console.error("Error deleting user:", error);
     }
   }, []);
+  
 
   // Fetch users data
   useEffect(() => {
