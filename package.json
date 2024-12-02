@@ -17,9 +17,13 @@
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
+<<<<<<< Updated upstream
+=======
+    "@emotion/styled": "^11.13.5",
+>>>>>>> Stashed changes
     "@headlessui/react": "^2.2.0",
     "@hello-pangea/dnd": "^17.0.0",
-    "@mantine/core": "^7.14.3",
+    "@mantine/core": "6.0.13",
     "@mantine/hooks": "^7.14.3",
     "@mantine/notifications": "^7.14.2",
     "@mona-health/react-input-mask": "^3.0.3",

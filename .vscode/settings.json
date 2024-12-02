@@ -1,6 +1,11 @@
 {
     "cSpell.words": [
+<<<<<<< Updated upstream
         "headlessui",
         "papaparse"
+=======
+        "atleast",
+        "headlessui"
+>>>>>>> Stashed changes
     ]
 }

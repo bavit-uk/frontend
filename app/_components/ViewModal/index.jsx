@@ -1,12 +1,26 @@
+<<<<<<< Updated upstream
+=======
+/* eslint-disable @typescript-eslint/no-unused-vars */
+>>>>>>> Stashed changes
 import {
   Container,
   Group,
   Modal as ModalMantine,
+<<<<<<< Updated upstream
   createStyles,
 } from "@mantine/core";
 import Button from "../Button";
 
 const useStyles = createStyles((theme) => ({
+=======
+  createStyles
+} from "@mantine/core";
+import Button from "../ui/Button";
+
+
+// Rename your custom useStyles function
+const useModalStyles = createStyles((theme) => ({
+>>>>>>> Stashed changes
   root: {
     display: "flex",
     flexDirection: "column",
@@ -16,7 +30,11 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const ViewModal = ({ opened, setOpened, children, title }) => {
+<<<<<<< Updated upstream
   const { classes } = useStyles();
+=======
+  const { classes } = useModalStyles();  // Use the renamed hook here
+>>>>>>> Stashed changes
   return (
     <ModalMantine
       opened={opened}
@@ -45,4 +63,8 @@ const ViewModal = ({ opened, setOpened, children, title }) => {
     </ModalMantine>
   );
 };
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 export default ViewModal;

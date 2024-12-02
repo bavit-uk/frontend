@@ -10,6 +10,21 @@ interface NavItem {
 export const adminsidebar: NavItem[] = [
     { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
     {
+<<<<<<< Updated upstream
+=======
+        title: "User Management",
+        icon: Users,
+        href: "/users",
+        children: [
+            { title: "Add User", icon: Users, href: "/dashboard/user-management/add-user" },
+            // { title: "View User", icon: Users, href: "/dashboard/suplier_management/suplier_list" },
+            { title: "View User", icon: Users, href: "/dashboard/user-management/view-user" },
+            { title: "Add Category", icon: Users, href: "/dashboard/user-management/add-category" },
+
+        ],
+    },
+    {
+>>>>>>> Stashed changes
         title: "Supplier Management",
         icon: Users,
         href: "/supliermanagement",
