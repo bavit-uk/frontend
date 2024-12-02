@@ -50,7 +50,9 @@ type Inputs = {
 export default function ProfileSettingsPage() {
   const [userData, setUserData] = useState<Inputs | null>(null);
   const [editUserData, setEditUserData] = useState<any | null>([]);
-  const [userCategory, setUserCategory] = useState<{ _id: string; role: string }[] | null>(null);
+  const [userCategory, setUserCategory] = useState<
+    { _id: string; role: string }[] | null
+  >(null);
   const [userAddress, setUserAddress] = useState<Address[] | null>(null);
 
   const [isAddressExists, setIsAddressExists] = useState<boolean>(false); // Track address existence
@@ -110,11 +112,15 @@ export default function ProfileSettingsPage() {
 
       const fetchUserAddress = async () => {
         try {
-          const response = await client.get(`/user/address/${editUserData._id}`);
+          const response = await client.get(
+            `/user/address/${editUserData._id}`
+          );
 
           if (response.data && response.data.address) {
             const addresses = response.data.address;
-            const addressesList = Array.isArray(addresses) ? addresses : [addresses];
+            const addressesList = Array.isArray(addresses)
+              ? addresses
+              : [addresses];
             setUserAddress(addressesList);
             setIsAddressExists(true); // Address exists
           } else {
@@ -173,10 +179,13 @@ export default function ProfileSettingsPage() {
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
       // Prepare the address object
-      console.log("dataaaayyy :" , data)
+      console.log("dataaaayyy :", data);
       const address = [
         {
-          _id: userAddress?.length && userAddress[0]?._id ? userAddress[0]._id : "",
+          _id:
+            userAddress?.length && userAddress[0]?._id
+              ? userAddress[0]._id
+              : "",
           label: data.label,
           street: data.street,
           city: data.city,
@@ -189,6 +198,7 @@ export default function ProfileSettingsPage() {
       if (!address[0]?._id) {
         delete address[0]._id; // Remove _id if it doesn't exist
       }
+
       console.log("Adresssss : ", data);
       // Prepare the main payload
       const transformedData: Partial<Inputs> = {
@@ -219,14 +229,44 @@ export default function ProfileSettingsPage() {
             },
           }
         );
-        toast.success(response.data.message);
+
+        // Show success message
+        toast.success("User details updated successfully.");
+
+        // Optionally, redirect to the user list page or stay on the edit page
+        // router.push("/dashboard/user-management"); // Uncomment this line if you want to redirect back
+
         return response.data;
       } catch (error) {
-        toast.error("Update failed.");
+        // Show error message if update fails
+        toast.error("Update failed. Please try again.");
         throw error;
       }
     },
   });
+  const handleReset = () => {
+    // Reset form values to their initial state
+    reset({
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      email: "",
+      password: "",
+      dob: "",
+      _id: "", // Clear user ID
+      address: [], // Clear the address field
+      label: "",
+      street: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+    });
+
+    // Optionally reset other states like userAddress, userCategory, etc.
+    setUserAddress([]); // Clear user address state
+    setIsAddressExists(false); // Reset address existence flag
+  };
 
   if (!userCategory)
     return (
@@ -306,7 +346,8 @@ export default function ProfileSettingsPage() {
             required: "Email is required",
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: "Invalid email address",
+              message:
+                "Invalid email address. It should contain the '@' symbol.",
             },
           }}
           classes={{
@@ -503,10 +544,12 @@ export default function ProfileSettingsPage() {
         <ControlledSelect
           label="User Category"
           name="userCategory"
-          options={userCategory.map((category: { _id: string; role: string }) => ({
-            value: category._id,
-            label: category.role,
-          }))}
+          options={userCategory.map(
+            (category: { _id: string; role: string }) => ({
+              value: category._id,
+              label: category.role,
+            })
+          )}
           register={register}
           errors={errors}
           required
@@ -514,6 +557,7 @@ export default function ProfileSettingsPage() {
 
         <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
           <button
+            onClick={handleReset}
             type="button"
             className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors"
           >
