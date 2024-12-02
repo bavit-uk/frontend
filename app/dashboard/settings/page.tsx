@@ -217,10 +217,30 @@ const onSubmit = useMutation({
           errors={errors}
           register={register}
           rules={{
-            required: "Email is required",
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: "Invalid email address",
+            required: "Email address is required", // Handling empty email
+            validate: {
+              containsAtSymbol: (value) => {
+                if (!value.includes("@")) {
+                  return "Email must contain '@' symbol"; // Custom check for '@'
+                }
+                return true; // If '@' exists, proceed to next validation
+              },
+              validEmailFormat: (value) => {
+                // Split the email into two parts using '@'
+                const parts = value.split("@");
+                if (parts.length !== 2) {
+                  return "Email must have a valid domain after '@'"; // Ensures only one '@' exists
+                }
+
+                const [localPart, domainPart] = parts;
+
+                // Check if both parts are non-empty and the domain part has a dot (.)
+                if (!localPart || !domainPart || !domainPart.includes(".")) {
+                  return "Invalid email format. Please provide a valid domain."; // Checks domain validity
+                }
+
+                return true; // If everything passes
+              },
             },
           }}
           classes={{

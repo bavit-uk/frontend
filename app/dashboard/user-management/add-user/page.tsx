@@ -124,8 +124,8 @@ export default function ProfileSettingsPage() {
     return (
         <div className="px-5">
             <div className="text-center mb-6">
-                <h2 className="font-bold text-2xl">Profile Settings</h2>
-                <p className="text-gray-600">Update Your Profile Information</p>
+                <h2 className="font-bold text-2xl">Add User</h2>
+                <p className="text-gray-600">Add  Information</p>
             </div>
 
             <form className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" onSubmit={handleSubmit((data) => onSubmit.mutate(data))} noValidate>
@@ -186,12 +186,46 @@ export default function ProfileSettingsPage() {
                     errors={errors}
                     register={register}
                     rules={{
-                        required: "Email is required",
-                        pattern: {
-                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                            message: "Invalid email address",
+                        required: "Email address is required", // Handling empty email
+                        validate: {
+                          containsAtSymbol: (value) => {
+                            if (!value.includes('@')) {
+                              return "Email must contain '@' symbol"; // Custom check for '@'
+                            }
+                            return true; // If '@' exists, proceed to next validation
+                          },
+                          validEmailFormat: (value) => {
+                            // Split the email into two parts using '@'
+                            const parts = value.split('@');
+                            if (parts.length !== 2) {
+                              return "Email must have a valid domain after '@'"; // Ensures only one '@' exists
+                            }
+                            
+                            const [localPart, domainPart] = parts;
+                    
+                            // Check if both parts are non-empty and the domain part has a dot (.)
+                            if (!localPart || !domainPart || !domainPart.includes('.')) {
+                              return "Invalid email format. Please provide a valid domain."; // Checks domain validity
+                            }
+                            
+                            return true; // If everything passes
+                          },
+                          minLength: (value) => {
+                            // Min length validation (adjust as needed)
+                            if (value.length < 5) {
+                              return "Email must be at least 5 characters long"; // Minimum length error message
+                            }
+                            return true;
+                          },
+                          maxLength: (value) => {
+                            // Max length validation (adjust as needed)
+                            if (value.length > 50) {
+                              return "Email must be no more than 50 characters long"; // Maximum length error message
+                            }
+                            return true;
+                          }
                         },
-                    }}
+                      }}
                     classes={{
                         input: "text-xl px-4 py-3",
                     }}

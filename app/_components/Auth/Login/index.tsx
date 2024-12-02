@@ -42,14 +42,14 @@ const Login = ({}) => {
       rememberMe: true,
     },
   });
-const handleForgetPassword=()=>{
-  router.push('./forget-password')
-}
+  const handleForgetPassword = () => {
+    router.push("./forget-password");
+  };
 
-const handleRegister=()=>{
-  router.push('./register')
-}
-console.log(handleRegister)
+  const handleRegister = () => {
+    router.push("./register");
+  };
+  console.log(handleRegister);
 
   // const googleLogin = useGoogleLogin({
   //   flow: 'auth-code',
@@ -76,10 +76,10 @@ console.log(handleRegister)
     mutationFn: async (data: Inputs) => {
       data.email = data.email.toLowerCase();
       const response = await client.post("/auth/login", data);
-      console.log("REsponse : " , response.data.data.accessToken)
-      localStorage.setItem("accessToken" , response.data.data.accessToken)
-      const token = localStorage.getItem("accessToken")
-      console.log("token : " , token)
+      console.log("REsponse : ", response.data.data.accessToken);
+      localStorage.setItem("accessToken", response.data.data.accessToken);
+      const token = localStorage.getItem("accessToken");
+      console.log("token : ", token);
       return response.data.data;
     },
     onSuccess: (data, inputs) => {
@@ -104,7 +104,8 @@ console.log(handleRegister)
     },
     onError: (error: AxiosError<any>) => {
       // Backend Error Handling
-      const errorMessage = error.response?.data?.message || "There was an error logging in";
+      const errorMessage =
+        error.response?.data?.message || "There was an error logging in";
       toast.error(errorMessage); // Display the error message from backend
     },
   });
@@ -116,17 +117,37 @@ console.log(handleRegister)
         noValidate
       >
         {onSubmit.isPending}
-         {/* Email Input */}
-         <ControlledInput
+        {/* Email Input */}
+        <ControlledInput
           type="email"
           placeholder="Email"
           errors={errors}
           register={register}
           rules={{
             required: "Email address is required", // Handling empty email
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: "Invalid email format", // Invalid email format
+            validate: {
+              containsAtSymbol: (value) => {
+                if (!value.includes("@")) {
+                  return "Email must contain '@' symbol"; // Custom check for '@'
+                }
+                return true; // If '@' exists, proceed to next validation
+              },
+              validEmailFormat: (value) => {
+                // Split the email into two parts using '@'
+                const parts = value.split("@");
+                if (parts.length !== 2) {
+                  return "Email must have a valid domain after '@'"; // Ensures only one '@' exists
+                }
+
+                const [localPart, domainPart] = parts;
+
+                // Check if both parts are non-empty and the domain part has a dot (.)
+                if (!localPart || !domainPart || !domainPart.includes(".")) {
+                  return "Invalid email format. Please provide a valid domain."; // Checks domain validity
+                }
+
+                return true; // If everything passes
+              },
             },
           }}
           {...register("email")}
@@ -136,7 +157,6 @@ console.log(handleRegister)
           required
         />
 
-     
         {/* Password Input */}
         <ControlledInput
           type="password"
@@ -154,7 +174,6 @@ console.log(handleRegister)
         />
 
         <button
-
           className="bg-red-500 w-full rounded-md px-6 py-4 text-xl font-medium text-white"
           type="submit"
         >
@@ -179,7 +198,6 @@ console.log(handleRegister)
 
           <button
             onClick={handleForgetPassword}
-
             className="text-primary text-blue-500 cursor-pointer text-xl hover:underline"
           >
             Forgot password?
@@ -207,7 +225,7 @@ console.log(handleRegister)
           <button
             type="button"
             onClick={() => {
-              handleRegister()
+              handleRegister();
             }}
             className="text-primary text-blue-500 hover:underline"
           >
