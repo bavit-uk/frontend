@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
-import React, { ForwardRefRenderFunction, useState } from "react";
+import React, { useState } from "react";
 import { cn } from "../../../_utils/cn";
 import { FieldErrors, RegisterOptions, UseFormRegister, UseFormWatch } from "react-hook-form";
 import InputMask from "@mona-health/react-input-mask";
@@ -107,7 +106,9 @@ const ControlledInput: React.FC<ControlledInputProps> = (
         )}
       </div>
       {props.name && errors && errors[props.name] && (
-        <span className={cn("text-xs text-red-500", classes?.error)}>{errors[props.name]?.message?.toString()}</span>
+        <span className={cn("text-xs text-red-500", classes?.error)}>
+          {errors[props.name]?.message?.toString()}
+        </span>
       )}
     </div>
   );
