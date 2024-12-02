@@ -75,7 +75,7 @@ export default function AddSupplier() {
         password: data.password,
         userType: "6749ad51ee2cd751095fb5f3",
         supplierCategory: data.supplierCategory,
-        supplierCategory: data.supplierCategory,
+
         dob: data.dob,
         address: [
           {

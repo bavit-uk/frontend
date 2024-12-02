@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"; // Ensure this is a client component
 
@@ -53,6 +54,7 @@ const ViewUserPage = () => {
 
 
   // Use useCallback for handleDelete to prevent unnecessary re-creations of the function
+  // Use useCallback for handleDelete to prevent unnecessary re-creations of the function
   const handleDelete = useCallback(async (row: any) => {
     // Show confirmation prompt before deleting
     const isConfirmed = window.confirm("Are you sure you want to delete this user?");
@@ -80,24 +82,10 @@ const ViewUserPage = () => {
   
       // Show success message
       alert("User Deleted");
-  
-      setUsers((prevUsers: any) => ({
-        ...prevUsers,
-        data: prevUsers.data.filter((user: any) => user._id !== deleteUserId),
-      }));
-      setOpenDeleteModal(false);
-      toast.error("User deleted successfully.");
     } catch (error) {
       // Log any errors that occur during the deletion process
       console.error("Error deleting user:", error);
-      setOpenDeleteModal(false);
     }
-  };
-  
-
-  const handleDelete = useCallback((row: any) => {
-    setDeleteUserId(row._id); // Store the user ID to delete
-    setOpenDeleteModal(true); // Open the delete confirmation modal
   }, []);
   
   // Fetch users data
@@ -294,7 +282,7 @@ const ViewUserPage = () => {
           <Button variant="outline" onClick={() => setOpenDeleteModal(false)}>
             Cancel
           </Button>
-          <Button color="red" onClick={confirmDelete}>
+          <Button color="red" onClick={handleDelete}>
             Confirm
           </Button>
         </Group>
