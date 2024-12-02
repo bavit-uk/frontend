@@ -23,7 +23,8 @@ export const adminsidebar: NavItem[] = [
             { title: "Add User", icon: Users, href: "/dashboard/user-management/add-user" , permission: "ADD_USER" },
             // { title: "View User", icon: Users, href: "/dashboard/suplier_management/suplier_list" },
             { title: "View User", icon: Users, href: "/dashboard/user-management/view-user" , permission: "VIEW_USER"},
-            
+            { title: "Add Category", icon: Users, href: "/dashboard/user-management/add-category" , permission: "ADD_CATEGORY"},
+            // { title: "View Category", icon: Users, href: "/dashboard/user-management/view-category" , permission: "VIEW_CATEGORY"},
         ],
     },
     {

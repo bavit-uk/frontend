@@ -48,6 +48,7 @@ export default function AddSupplier() {
   const [userCategory, setUserCategory] = useState<any | null>(null);
   const [supplierCategory, setSupplierCategory] = useState<any | null>(null);
   //   const router = useRouter();
+  //   const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -73,6 +74,7 @@ export default function AddSupplier() {
         email: data.email,
         password: data.password,
         userType: "6749ad51ee2cd751095fb5f3",
+        supplierCategory: data.supplierCategory,
         supplierCategory: data.supplierCategory,
         dob: data.dob,
         address: [
@@ -197,26 +199,40 @@ export default function AddSupplier() {
           }}
           required
         />
-
         <ControlledInput
           label="Email"
           type="email"
-          name="email"
-          placeholder="Enter Email"
+          placeholder="Email"
           errors={errors}
           register={register}
           rules={{
-            required: "Email is required",
-            pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Invalid email format. Make sure it's correct (e.g, user@example.com)",
+            required: "Email address is required", // Handling empty email
+            validate: {
+              containsAtSymbol: (value) => {
+                if (!value.includes("@")) {
+                  return "Email must contain '@' symbol"; // Custom check for '@'
+                }
+                return true; // If '@' exists, proceed to next validation
+              },
+              validEmailFormat: (value) => {
+                // Split the email into two parts using '@'
+                const parts = value.split("@");
+                if (parts.length !== 2) {
+                  return "Email must have a valid domain after '@'"; // Ensures only one '@' exists
+                }
+
+                const [localPart, domainPart] = parts;
+
+                // Check if both parts are non-empty and the domain part has a dot (.)
+                if (!localPart || !domainPart || !domainPart.includes(".")) {
+                  return "Invalid email format. Please provide a valid domain."; // Checks domain validity
+                }
+
+                return true; // If everything passes
+              },
             },
-            maxLength: {
-                value: 256,
-                message: "Email should be a maximum of 256 characters",
-            },
-        
-        }}
+          }}
+          {...register("email")}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -245,6 +261,171 @@ export default function AddSupplier() {
         />
 
         <ControlledInput
+          label="Password"
+          type="password"
+          name="password"
+          placeholder="Password"
+          errors={errors}
+          register={register}
+          rules={{
+            required: "Password is required",
+            pattern: {
+              value:
+                /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              message:
+                "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+            },
+          }}
+          classes={{
+            input: "text-xl px-4 py-3",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Confirm Password"
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          errors={errors}
+          register={register}
+          rules={{
+            required: "Confirm Password is required",
+            validate: (value) =>
+              value === getValues("password") || "Passwords do not match",
+          }}
+          classes={{
+            input: "text-xl px-4 py-3",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Date of Birth"
+          type="date"
+          name="dob"
+          placeholder="Date of Birth"
+          // value={userData.dateOfBirth}
+          errors={errors}
+          register={register}
+          // rules={{
+          //     required: "Password is required",
+          //     pattern: {
+          //         value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          //         message: "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+          //     },
+          // }}
+          classes={{
+            input: "text-xl p-4 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Label"
+          type="text"
+          name="label"
+          placeholder="Enter Label"
+          errors={errors}
+          register={register}
+          rules={{}}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Street"
+          type="text"
+          name="street"
+          placeholder="Enter Street"
+          errors={errors}
+          register={register}
+          rules={{}}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="City"
+          type="text"
+          name="city"
+          placeholder="Enter City"
+          errors={errors}
+          register={register}
+          rules={{
+            pattern: {
+              value: /^[a-z ,.'-]+$/i,
+              message: "Invalid City",
+            },
+          }}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="State"
+          type="text"
+          name="state"
+          placeholder="Enter State"
+          errors={errors}
+          register={register}
+          rules={{
+            pattern: {
+              value: /^[a-z ,.'-]+$/i,
+              message: "Invalid State",
+            },
+          }}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Postal Code"
+          type="text"
+          name="postalCode"
+          placeholder="Enter Zip Code"
+          errors={errors}
+          register={register}
+          // rules={{
+          //     pattern: {
+          //         value: /^\d{5}(-\d{4})?$/,
+          //         message: "Invalid Postal Code",
+          //     },
+          // }}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Country"
+          type="text"
+          name="country"
+          placeholder="Country"
+          errors={errors}
+          register={register}
+          rules={{
+            pattern: {
+              value: /^[a-zA-Z\s,.'-]+$/,
+              message: "Invalid Country",
+            },
+          }}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        {/* <ControlledSelect
           label="Password"
           type="password"
           name="password"

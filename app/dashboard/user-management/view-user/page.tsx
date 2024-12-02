@@ -53,13 +53,33 @@ const ViewUserPage = () => {
 
 
   // Use useCallback for handleDelete to prevent unnecessary re-creations of the function
-  const confirmDelete = async () => {
-    if (!deleteUserId) return;
+  const handleDelete = useCallback(async (row: any) => {
+    // Show confirmation prompt before deleting
+    const isConfirmed = window.confirm("Are you sure you want to delete this user?");
+  
+    if (!isConfirmed) {
+      // If the admin cancels, do not proceed with deletion
+      console.log("User deletion canceled");
+      return;
+    }
   
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-      const link = `${backendUrl}/user/${deleteUserId}`;
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use environment variable
+      const link = `${backendUrl}/user/${row._id}`;
+  
+      // Perform the delete action
       await axios.delete(link);
+  
+      // Update state to remove the deleted user from the list
+      setUsers((prevUsers: any) => {
+        return {
+          ...prevUsers,
+          data: prevUsers.data.filter((user: any) => user._id !== row._id),
+        };
+      });
+  
+      // Show success message
+      alert("User Deleted");
   
       setUsers((prevUsers: any) => ({
         ...prevUsers,
@@ -68,6 +88,7 @@ const ViewUserPage = () => {
       setOpenDeleteModal(false);
       toast.error("User deleted successfully.");
     } catch (error) {
+      // Log any errors that occur during the deletion process
       console.error("Error deleting user:", error);
       setOpenDeleteModal(false);
     }

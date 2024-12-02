@@ -71,23 +71,41 @@ const ViewUserPage = () => {
 
   // Use useCallback for handleDelete to prevent unnecessary re-creations of the function
   const handleDelete = useCallback(async (row: any) => {
+    // Log the user ID for debugging
     console.log("Row Data:", row._id);
+  
+    // Show confirmation prompt to the admin before deleting
+    const isConfirmed = window.confirm("Are you sure you want to delete this supplier?");
+  
+    if (!isConfirmed) {
+      // If the admin cancels, do not proceed with deletion
+      console.log("Supplier deletion canceled");
+      return;
+    }
+  
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL; // Use environment variable
       const link = `${backendUrl}/supplier/${row._id}`;
-      // console.log("Delete Link:", link);
+  
+      // Perform the delete action
       await axios.delete(link);
+  
+      // Update state to remove the deleted supplier from the list
       setUsers((prevUsers: any) => {
         return {
           ...prevUsers,
           data: prevUsers.data.filter((user: any) => user._id !== row._id),
         };
       });
+  
+      // Show success message
       alert("Supplier Deleted");
     } catch (error) {
+      // Log any errors that occur during the deletion process
       console.error("Error deleting user:", error);
     }
   }, []);
+  
 
   // Fetch users data
   useEffect(() => {
