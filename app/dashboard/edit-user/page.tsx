@@ -173,7 +173,7 @@ export default function ProfileSettingsPage() {
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
       // Prepare the address object
-      console.log("dataaaayyy :" , data)
+      console.log("dataaaayyy :", data);
       const address = [
         {
           _id: userAddress?.length && userAddress[0]?._id ? userAddress[0]._id : "",
@@ -185,10 +185,11 @@ export default function ProfileSettingsPage() {
           country: data.country,
         },
       ] as Address[];
-
+  
       if (!address[0]?._id) {
         delete address[0]._id; // Remove _id if it doesn't exist
       }
+  
       console.log("Adresssss : ", data);
       // Prepare the main payload
       const transformedData: Partial<Inputs> = {
@@ -200,15 +201,15 @@ export default function ProfileSettingsPage() {
         dob: data.dob,
         address,
       };
-
+  
       // Add password only if it's provided
       if (data.password) {
         transformedData.password = data.password;
       }
-
+  
       try {
         console.log("Transformed Data:", transformedData);
-
+  
         const response = await client.patch(
           `/user/${editUserData._id}`, // Assuming you're updating by user ID
           transformedData,
@@ -219,14 +220,22 @@ export default function ProfileSettingsPage() {
             },
           }
         );
-        toast.success(response.data.message);
+  
+        // Show success message
+        toast.success("User details updated successfully.");
+        
+        // Optionally, redirect to the user list page or stay on the edit page
+        // router.push("/dashboard/user-management"); // Uncomment this line if you want to redirect back
+  
         return response.data;
       } catch (error) {
-        toast.error("Update failed.");
+        // Show error message if update fails
+        toast.error("Update failed. Please try again.");
         throw error;
       }
     },
   });
+  
 
   if (!userCategory)
     return (
