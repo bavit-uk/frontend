@@ -3,13 +3,7 @@
 
 import { cn } from "../../../_utils/cn";
 import React, { ForwardRefRenderFunction } from "react";
-import {
-  FieldErrors,
-  RegisterOptions,
-  UseFormRegister,
-  UseFormWatch,
-} from "react-hook-form";
-
+import { FieldErrors, RegisterOptions, UseFormRegister, UseFormWatch } from "react-hook-form";
 
 type Classes = {
   root?: string;
@@ -33,17 +27,13 @@ type FormControlledSelect = {
   override?: boolean;
   label?: string;
   required?: boolean;
+  value?: string; // Added for controlled value
   onManualClick?: () => void;
 } & CommonProps;
 
-
 type SelectProps = FormControlledSelect;
 
-const ControlledSelect: ForwardRefRenderFunction<
-  HTMLSelectElement,
-  SelectProps
-> = (props) => {
-
+const ControlledSelect: ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (props) => {
   const {
     register,
     classes,
@@ -54,43 +44,23 @@ const ControlledSelect: ForwardRefRenderFunction<
     required,
     placeholder,
     options,
-    onManualClick,
+    value, // Added controlled value
+    // onManualClick,
   } = props;
 
-  
   if (!props.name) throw new Error("ControlledInput must have a name prop");
 
   return (
     <div className={classes?.root || ""}>
       {label && (
-        <label
-          htmlFor={props.name}
-          className={cn("block text-sm font-light", classes?.label)}
-        >
+        <label htmlFor={props.name} className={cn("block text-sm font-light", classes?.label)}>
           {label}
-          {label === "Exterior Color" && (
-            <span
-              onClick={onManualClick}
-              className="ml-1 cursor-pointer rounded bg-orange-300 p-1 text-xs text-orange-600"
-            >
-              Manual
-            </span>
-          )}
-          {label === "Interior Color" && (
-            <span
-              onClick={onManualClick}
-              className="ml-1 cursor-pointer rounded bg-orange-300 p-1 text-xs text-orange-600"
-            >
-              Manual
-            </span>
-          )}
-
           {required && <span className="ml-1 text-red-500">*</span>}
         </label>
       )}
 
-      {/* <select
-        {...props}
+      <select
+        value={value || ""} // Controlled value
         {...register(props.name, rules)}
         className={cn(
           override
@@ -98,38 +68,20 @@ const ControlledSelect: ForwardRefRenderFunction<
             : "w-full rounded-md border border-gray-300 p-2 font-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
           classes?.select
         )}
-        ref={ref}
-      > */}
-      <select
-        {...register(props.name, rules)}
-        className={cn(
-          override
-            ? ""
-            : "w-full rounded-md border border-gray-300  p-2 font-light  focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
-          classes?.select
-        )}
-
       >
         <option className="" value="" disabled>
           {placeholder || "Select an option"}
         </option>
-        {options.map((option) =>
-        (
+        {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
-        )
-        )}
+        ))}
       </select>
 
-      {props.name &&
-        errors &&
-        errors[props.name] &&
-        errors[props.name]?.message && (
-          <span className={cn("text-xs text-red-500", classes?.error)}>
-            {errors[props.name]?.message?.toString()}
-          </span>
-        )}
+      {props.name && errors && errors[props.name] && errors[props.name]?.message && (
+        <span className={cn("text-xs text-red-500", classes?.error)}>{errors[props.name]?.message?.toString()}</span>
+      )}
     </div>
   );
 };

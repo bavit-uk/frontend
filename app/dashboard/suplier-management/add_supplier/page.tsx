@@ -47,7 +47,7 @@ type Inputs = {
 export default function AddSupplier() {
   const [userCategory, setUserCategory] = useState<any | null>(null);
   const [supplierCategory, setSupplierCategory] = useState<any | null>(null);
-//   const router = useRouter();
+  //   const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -73,7 +73,7 @@ export default function AddSupplier() {
         email: data.email,
         password: data.password,
         userType: "6749ad51ee2cd751095fb5f3",
-        supplierCategory:data.supplierCategory,
+        supplierCategory: data.supplierCategory,
         dob: data.dob,
         address: [
           {
@@ -129,7 +129,7 @@ export default function AddSupplier() {
     <div className="px-5">
       <div className="text-center mb-6">
         <h2 className="font-bold text-2xl">Add Supplier</h2>
-        <p className="text-gray-600">Sub Line</p>
+        {/* <p className="text-gray-600">Sub Line</p> */}
       </div>
 
       <form
@@ -148,14 +148,20 @@ export default function AddSupplier() {
           rules={{
             required: "First Name is required",
             pattern: {
-              value: /^[a-zA-Z\s,.'-]+$/,
-              message: "Special characters not allowed",
+                value: /^[a-zA-Z\s,.'-]+$/,
+                message: "Special characters not allowed",
             },
             minLength: {
-              value: 2,
-              message: "First Name should be atleast 2 characters",
+                value: 2,
+                message: "First Name should be atleast 2 characters",
             },
-          }}
+            maxLength: {
+                value: 50,
+                message: "First Name should be maximum 50 characters",
+            },
+            validate: (value) =>
+                value.trim() !== "" || "First Name cannot be empty or just spaces",
+        }}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -172,14 +178,20 @@ export default function AddSupplier() {
           rules={{
             required: "Last Name is required",
             pattern: {
-              value: /^[a-zA-Z\s,.'-]+$/,
-              message: "Special characters not allowed",
+                value: /^[a-zA-Z\s,.'-]+$/,
+                message: "Special characters not allowed",
             },
             minLength: {
-              value: 2,
-              message: "Last Name should be atleast 2 characters",
+                value: 2,
+                message: "Last Name should be atleast 2 characters",
             },
-          }}
+            maxLength: {
+                value: 50,
+                message: "Last Name should be maximum 50 characters",
+            },
+            validate: (value) =>
+                value.trim() !== "" || "Last Name cannot be empty or just spaces",
+        }}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -196,10 +208,15 @@ export default function AddSupplier() {
           rules={{
             required: "Email is required",
             pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: "Invalid email address",
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                message: "Invalid email format. Make sure it's correct (e.g, user@example.com)",
             },
-          }}
+            maxLength: {
+                value: 256,
+                message: "Email should be a maximum of 256 characters",
+            },
+        
+        }}
           classes={{
             input: "text-xl px-4 py-3",
           }}
@@ -211,13 +228,13 @@ export default function AddSupplier() {
           type="tel"
           name="phoneNumber"
           placeholder="Cell Number"
-          mask={"+1(999)-999-9999"}
+          mask={"+44(999)-999-9999"}
           errors={errors}
           register={register}
           rules={{
             required: "Cell Number is required",
             pattern: {
-              value: /^(\+1\s?)?(\d{3}|\(\d{3}\))[\s\-]?\d{3}[\s\-]?\d{4}$/,
+              value: /^(\+44\s?)?(\d{3}|\(\d{3}\))[\s\-]?\d{3}[\s\-]?\d{4}$/,
               message: "Invalid Cell Number",
             },
           }}
@@ -228,171 +245,171 @@ export default function AddSupplier() {
         />
 
         <ControlledInput
-           label="Password"
-           type="password"
-           name="password"
-           placeholder="Password"
-           errors={errors}
-           register={register}
-           rules={{
-             required: "Password is required",
-             pattern: {
-               value:
-                 /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-               message:
-                 "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
-             },
-           }}
-           classes={{
-             input: "text-xl px-4 py-3",
-           }}
-           required
-         />
- 
-         <ControlledInput
-           label="Confirm Password"
-           type="password"
-           name="confirmPassword"
-           placeholder="Confirm Password"
-           errors={errors}
-           register={register}
-           rules={{
-             required: "Confirm Password is required",
-             validate: (value) =>
-               value === getValues("password") || "Passwords do not match",
-           }}
-           classes={{
-             input: "text-xl px-4 py-3",
-           }}
-           required
-         />
- 
-         <ControlledInput
-           label="Date of Birth"
-           type="date"
-           name="dob"
-           placeholder="Date of Birth"
-           // value={userData.dateOfBirth}
-           errors={errors}
-           register={register}
-           // rules={{
-           //     required: "Password is required",
-           //     pattern: {
-           //         value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-           //         message: "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
-           //     },
-           // }}
-           classes={{
-             input: "text-xl p-4 w-full",
-           }}
-           required
-         />
- 
-         <ControlledInput
-           label="Label"
-           type="text"
-           name="label"
-           placeholder="Enter Label"
-           errors={errors}
-           register={register}
-           rules={{}}
-           classes={{
-             input: "text-xl px-4 py-3 w-full",
-           }}
-           required
-         />
- 
-         <ControlledInput
-           label="Street"
-           type="text"
-           name="street"
-           placeholder="Enter Street"
-           errors={errors}
-           register={register}
-           rules={{}}
-           classes={{
-             input: "text-xl px-4 py-3 w-full",
-           }}
-           required
-         />
- 
-         <ControlledInput
-           label="City"
-           type="text"
-           name="city"
-           placeholder="Enter City"
-           errors={errors}
-           register={register}
-           rules={{
-             pattern: {
-               value: /^[a-z ,.'-]+$/i,
-               message: "Invalid City",
-             },
-           }}
-           classes={{
-             input: "text-xl px-4 py-3 w-full",
-           }}
-           required
-         />
- 
-         <ControlledInput
-           label="State"
-           type="text"
-           name="state"
-           placeholder="Enter State"
-           errors={errors}
-           register={register}
-           rules={{
-             pattern: {
-               value: /^[a-z ,.'-]+$/i,
-               message: "Invalid State",
-             },
-           }}
-           classes={{
-             input: "text-xl px-4 py-3 w-full",
-           }}
-           required
-         />
- 
-         <ControlledInput
-           label="Postal Code"
-           type="text"
-           name="postalCode"
-           placeholder="Enter Zip Code"
-           errors={errors}
-           register={register}
-           // rules={{
-           //     pattern: {
-           //         value: /^\d{5}(-\d{4})?$/,
-           //         message: "Invalid Postal Code",
-           //     },
-           // }}
-           classes={{
-             input: "text-xl px-4 py-3 w-full",
-           }}
-           required
-         />
- 
-         <ControlledInput
-           label="Country"
-           type="text"
-           name="country"
-           placeholder="Country"
-           errors={errors}
-           register={register}
-           rules={{
-             pattern: {
-               value: /^[a-zA-Z\s,.'-]+$/,
-               message: "Invalid Country",
-             },
-           }}
-           classes={{
-             input: "text-xl px-4 py-3 w-full",
-           }}
-           required
-         />
- 
-         {/* <ControlledSelect
+          label="Password"
+          type="password"
+          name="password"
+          placeholder="Password"
+          errors={errors}
+          register={register}
+          rules={{
+            required: "Password is required",
+            pattern: {
+              value:
+                /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              message:
+                "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+            },
+          }}
+          classes={{
+            input: "text-xl px-4 py-3",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Confirm Password"
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          errors={errors}
+          register={register}
+          rules={{
+            required: "Confirm Password is required",
+            validate: (value) =>
+              value === getValues("password") || "Passwords do not match",
+          }}
+          classes={{
+            input: "text-xl px-4 py-3",
+          }}
+          required
+        />
+
+        {/* <ControlledInput
+          label="Date of Birth"
+          type="date"
+          name="dob"
+          placeholder="Date of Birth"
+          // value={userData.dateOfBirth}
+          errors={errors}
+          register={register}
+          // rules={{
+          //     required: "Password is required",
+          //     pattern: {
+          //         value: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          //         message: "Must Contain 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character",
+          //     },
+          // }}
+          classes={{
+            input: "text-xl p-4 w-full",
+          }}
+          required
+        /> */}
+
+        <ControlledInput
+          label="Label"
+          type="text"
+          name="label"
+          placeholder="Enter Label"
+          errors={errors}
+          register={register}
+          rules={{}}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Street"
+          type="text"
+          name="street"
+          placeholder="Enter Street"
+          errors={errors}
+          register={register}
+          rules={{}}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="City"
+          type="text"
+          name="city"
+          placeholder="Enter City"
+          errors={errors}
+          register={register}
+          rules={{
+            pattern: {
+              value: /^[a-z ,.'-]+$/i,
+              message: "Invalid City",
+            },
+          }}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="State"
+          type="text"
+          name="state"
+          placeholder="Enter State"
+          errors={errors}
+          register={register}
+          rules={{
+            pattern: {
+              value: /^[a-z ,.'-]+$/i,
+              message: "Invalid State",
+            },
+          }}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Postal Code"
+          type="text"
+          name="postalCode"
+          placeholder="Enter Zip Code"
+          errors={errors}
+          register={register}
+          // rules={{
+          //     pattern: {
+          //         value: /^\d{5}(-\d{4})?$/,
+          //         message: "Invalid Postal Code",
+          //     },
+          // }}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        <ControlledInput
+          label="Country"
+          type="text"
+          name="country"
+          placeholder="Country"
+          errors={errors}
+          register={register}
+          rules={{
+            pattern: {
+              value: /^[a-zA-Z\s,.'-]+$/,
+              message: "Invalid Country",
+            },
+          }}
+          classes={{
+            input: "text-xl px-4 py-3 w-full",
+          }}
+          required
+        />
+
+        {/* <ControlledSelect
            label="User Category"
            name="userCategory"
            options={userCategory.map((category: { _id: any; role: any }) => ({
@@ -404,37 +421,37 @@ export default function AddSupplier() {
            required
            readOnly
          /> */}
- 
-         <ControlledSelect
-           label="Supplier Category"
-           name="supplierCategory"
-           options={supplierCategory.map(
-             (category: { _id: any; name: any }) => ({
-               value: category._id,
-               label: category.name,
-             })
-           )}
-           register={register}
-           errors={errors}
-           required
-           readOnly
-         />
- 
-         <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
-           <button
-             type="button"
-             className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors"
-           >
-             Reset
-           </button>
-           <button
-             type="submit"
-             className="bg-red-500 rounded-md px-8 py-4 font-medium text-white hover:bg-red-600 transition-colors"
-           >
-             Add User
-           </button>
-         </div>
-       </form>
-     </div>
-   );
- }
+
+        <ControlledSelect
+          label="Supplier Category"
+          name="supplierCategory"
+          options={supplierCategory.map(
+            (category: { _id: any; name: any }) => ({
+              value: category._id,
+              label: category.name,
+            })
+          )}
+          register={register}
+          errors={errors}
+          required
+          readOnly
+        />
+
+        <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
+          <button
+            type="button"
+            className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors"
+          >
+            Reset
+          </button>
+          <button
+            type="submit"
+            className="bg-red-500 rounded-md px-8 py-4 font-medium text-white hover:bg-red-600 transition-colors"
+          >
+            Add User
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

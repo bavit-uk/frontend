@@ -65,19 +65,24 @@ export default function ProfileSettingsPage() {
     formState: { errors },
   } = useForm<Inputs>({
     reValidateMode: "onChange",
+    defaultValues: {
+      userCategory: "6749acd1ee2cd751095fb5ee",
+    },
   });
+
+  // console.log("Current user category:", getValues("userCategory"));
 
   useEffect(() => {
     // Get user data from localStorage
     const storedService = localStorage.getItem("editUserData");
-
-    console.log("vendor service data", storedService);
     if (storedService) {
       const parsedServiceData = JSON.parse(storedService);
-      console.log(`parsed data`, parsedServiceData);
+      // console.log(`parsed data`, parsedServiceData);
       setEditUserData(parsedServiceData);
       // Populate the form with data retrieved from localStorage
       setValue("firstName", editUserData.firstName);
+      // setValue("userCategory" , editUserData.userType.role)
+      // console.log( "editUserDataaaaa : " , editUserData)
       reset({
         firstName: editUserData.firstName,
         lastName: editUserData.lastName,
@@ -87,6 +92,7 @@ export default function ProfileSettingsPage() {
         dob: editUserData.dob,
         _id: editUserData._id,
         address: editUserData.address,
+        // userCategory: editUserData.userType,
       });
     }
   }, [userCategory]);
@@ -106,7 +112,7 @@ export default function ProfileSettingsPage() {
   useEffect(() => {
     // Ensure the editUserData has been set and has the required _id
     if (editUserData?._id) {
-      console.log("Edit user data after", editUserData);
+      // console.log("Edit user data after", editUserData);
 
       const fetchUserAddress = async () => {
         try {
@@ -121,7 +127,7 @@ export default function ProfileSettingsPage() {
             setIsAddressExists(false); // Address doesn't exist
           }
           //   setUserAddress(response.data);
-          console.log("Got the address", response.data);
+          // console.log("Got the address", response.data);
         } catch (error) {
           console.error("Error fetching user address:", error);
           toast.error("Failed to load user address.");
@@ -149,6 +155,12 @@ export default function ProfileSettingsPage() {
   //   }, [editUserData]);
 
   useEffect(() => {
+    if (editUserData?.userType?._id) {
+      setValue("userCategory", editUserData.userType._id);
+    }
+  }, [editUserData, setValue]);
+
+  useEffect(() => {
     // Check if userAddress and userAddress.address are present
     // console.log("User Address", userAddress);
 
@@ -157,7 +169,7 @@ export default function ProfileSettingsPage() {
       // console.log("Address", userAddress.address.street);
       const firstAddress = userAddress[0];
 
-      console.log("First Address", firstAddress);
+      // console.log("First Address", firstAddress);
       reset({
         label: firstAddress.label,
         street: firstAddress.street,
@@ -173,7 +185,7 @@ export default function ProfileSettingsPage() {
   const onSubmit = useMutation({
     mutationFn: async (data: Inputs) => {
       // Prepare the address object
-      console.log("dataaaayyy :" , data)
+      // console.log("dataaaayyy :" , data)
       const address = [
         {
           _id: userAddress?.length && userAddress[0]?._id ? userAddress[0]._id : "",
@@ -189,7 +201,7 @@ export default function ProfileSettingsPage() {
       if (!address[0]?._id) {
         delete address[0]._id; // Remove _id if it doesn't exist
       }
-      console.log("Adresssss : ", data);
+      // console.log("Adresssss : ", data);
       // Prepare the main payload
       const transformedData: Partial<Inputs> = {
         firstName: data.firstName,
@@ -207,7 +219,7 @@ export default function ProfileSettingsPage() {
       }
 
       try {
-        console.log("Transformed Data:", transformedData);
+        // console.log("Transformed Data:", transformedData);
 
         const response = await client.patch(
           `/user/${editUserData._id}`, // Assuming you're updating by user ID
@@ -221,8 +233,9 @@ export default function ProfileSettingsPage() {
         );
         toast.success(response.data.message);
         return response.data;
-      } catch (error) {
-        toast.error("Update failed.");
+      } catch (error: any) {
+        // console.log( "error : " , error?.response?.data.issueMessage)
+        toast.error(error?.response?.data.issueMessage);
         throw error;
       }
     },
@@ -320,7 +333,7 @@ export default function ProfileSettingsPage() {
           type="tel"
           name="phoneNumber"
           placeholder="Cell Number"
-          mask={"+1(999)-999-9999"}
+          mask={"+44(999)-999-9999"}
           errors={errors}
           register={register}
           rules={{
@@ -394,111 +407,110 @@ export default function ProfileSettingsPage() {
           required
         />
 
-        <br />
 
-        <ControlledInput
-          label="Label"
-          type="text"
-          name={`label`}
-          placeholder="Label"
-          errors={errors}
-          register={register}
-          rules={{}}
-          classes={{
-            input: "text-xl p-4 w-full",
-          }}
-          required
-        />
+          <ControlledInput
+            label="Label"
+            type="text"
+            name={`label`}
+            placeholder="Label"
+            errors={errors}
+            register={register}
+            rules={{}}
+            classes={{
+              input: "text-xl p-4 w-full",
+            }}
+            required
+          />
 
-        <ControlledInput
-          label="Street"
-          type="text"
-          name={`street`}
-          placeholder="Enter Street"
-          errors={errors}
-          register={register}
-          rules={{}}
-          classes={{
-            input: "text-xl p-4 w-full",
-          }}
-          required
-        />
+          <ControlledInput
+            label="Street"
+            type="text"
+            name={`street`}
+            placeholder="Enter Street"
+            errors={errors}
+            register={register}
+            rules={{}}
+            classes={{
+              input: "text-xl p-4 w-full",
+            }}
+            required
+          />
 
-        <ControlledInput
-          label="City"
-          type="text"
-          name={`city`}
-          placeholder="Enter City"
-          errors={errors}
-          register={register}
-          rules={{
-            pattern: {
-              value: /^[a-z ,.'-]+$/i,
-              message: "Invalid City",
-            },
-          }}
-          classes={{
-            input: "text-xl p-4 w-full",
-          }}
-          required
-        />
+          <ControlledInput
+            label="City"
+            type="text"
+            name={`city`}
+            placeholder="Enter City"
+            errors={errors}
+            register={register}
+            rules={{
+              pattern: {
+                value: /^[a-z ,.'-]+$/i,
+                message: "Invalid City",
+              },
+            }}
+            classes={{
+              input: "text-xl p-4 w-full",
+            }}
+            required
+          />
 
-        <ControlledInput
-          label="State"
-          type="text"
-          name={`state`}
-          placeholder="Enter State"
-          errors={errors}
-          register={register}
-          rules={{
-            pattern: {
-              value: /^[a-z ,.'-]+$/i,
-              message: "Invalid State",
-            },
-          }}
-          classes={{
-            input: "text-xl p-4 w-full",
-          }}
-          required
-        />
+          <ControlledInput
+            label="State"
+            type="text"
+            name={`state`}
+            placeholder="Enter State"
+            errors={errors}
+            register={register}
+            rules={{
+              pattern: {
+                value: /^[a-z ,.'-]+$/i,
+                message: "Invalid State",
+              },
+            }}
+            classes={{
+              input: "text-xl p-4 w-full",
+            }}
+            required
+          />
 
-        <ControlledInput
-          label="Postal Code"
-          type="text"
-          name={`postalCode`}
-          placeholder="Enter Zip Code"
-          errors={errors}
-          register={register}
-          // rules={{
-          //     pattern: {
-          //         value: /^\d{5}(-\d{4})?$/,
-          //         message: "Invalid Postal Code",
-          //     },
-          // }}
-          classes={{
-            input: "text-xl p-4 w-full",
-          }}
-          required
-        />
+          <ControlledInput
+            label="Postal Code"
+            type="text"
+            name={`postalCode`}
+            placeholder="Enter Zip Code"
+            errors={errors}
+            register={register}
+            // rules={{
+            //     pattern: {
+            //         value: /^\d{5}(-\d{4})?$/,
+            //         message: "Invalid Postal Code",
+            //     },
+            // }}
+            classes={{
+              input: "text-xl p-4 w-full",
+            }}
+            required
+          />
 
-        <ControlledInput
-          label="Country"
-          type="text"
-          name={`country`}
-          placeholder="Country"
-          errors={errors}
-          register={register}
-          rules={{
-            pattern: {
-              value: /^[a-zA-Z\s,.'-]+$/,
-              message: "Invalid Country",
-            },
-          }}
-          classes={{
-            input: "text-xl p-4 w-full",
-          }}
-          required
-        />
+          <ControlledInput
+            label="Country"
+            type="text"
+            name={`country`}
+            placeholder="Country"
+            errors={errors}
+            register={register}
+            rules={{
+              pattern: {
+                value: /^[a-zA-Z\s,.'-]+$/,
+                message: "Invalid Country",
+              },
+            }}
+            classes={{
+              input: "text-xl p-4 w-full",
+            }}
+            required
+          />
 
         <ControlledSelect
           label="User Category"
@@ -507,6 +519,7 @@ export default function ProfileSettingsPage() {
             value: category._id,
             label: category.role,
           }))}
+          value={watch("userCategory") || editUserData?.userType?._id || "6749acd1ee2cd751095fb5ee"}
           register={register}
           errors={errors}
           required

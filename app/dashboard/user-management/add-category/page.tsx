@@ -142,7 +142,7 @@ export default function AddCategoryForm() {
     <div className="px-5">
       <div className="text-center mb-6">
         <h2 className="font-bold text-2xl">Add Category</h2>
-        <p className="text-gray-600">Update Your Profile Information</p>
+        {/* <p className="text-gray-600">Update Your Profile Information</p> */}
       </div>
 
       <form className="space-y-5" onSubmit={handleSubmit((data) => onSubmit.mutate(data))} noValidate>
