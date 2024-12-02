@@ -235,6 +235,30 @@ export default function ProfileSettingsPage() {
       }
     },
   });
+  const handleReset = () => {
+    // Reset form values to their initial state
+    reset({
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      email: '',
+      password: '',
+      dob: '',
+      _id: '', // Clear user ID
+      address: [], // Clear the address field
+      label: '',
+      street: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      country: ''
+    });
+  
+    // Optionally reset other states like userAddress, userCategory, etc.
+    setUserAddress([]); // Clear user address state
+    setIsAddressExists(false); // Reset address existence flag
+
+  };
   
 
   if (!userCategory)
@@ -522,7 +546,7 @@ export default function ProfileSettingsPage() {
         />
 
         <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">
-          <button
+          <button onClick={handleReset}
             type="button"
             className="bg-gray-500 rounded-md px-8 py-4 font-medium text-white hover:bg-gray-600 transition-colors"
           >
