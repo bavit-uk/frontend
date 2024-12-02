@@ -10,6 +10,7 @@ import axios from "axios";
 import ViewModal from "@/app/_components/ViewModal";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface IUserType {
   role: string;
@@ -30,14 +31,43 @@ const ViewUserPage = () => {
     try {
       setLoading(true);
       const response = await client.get("/supplier"); // Assuming your API endpoint is /user
-      // console.log("API Response:", response.data);
-      setUsers(response.data); // Assuming response.data contains the array of users
+      const data = response.data
+      const usersWithSerialNo = data.data.map((user: any, index: number) => ({
+        ...user,
+        serialNo: index + 1, // Add serial number here
+      }));
+      setUsers(usersWithSerialNo); // Assuming response.data contains the array of users
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Function to toggle the block status of a user
+  const toggleBlockStatus = async (row: any) => {
+    try {
+      const updatedStatus = !row.isBlocked; // Reverse the current status
+      const response = await client.patch(`/user/block/${row._id}`, {
+        isBlocked: updatedStatus,
+      });
+
+      const updatedUser = response.data.data;
+
+      // Update the local state with the updated user data
+      setUsers((prevUsers: any) =>
+        prevUsers.map((user: any) =>
+          user._id === updatedUser._id ? { ...user, isBlocked: updatedStatus } : user
+        )
+      );
+
+      toast.success(`Supplier ${updatedStatus ? "blocked" : "unblocked"} successfully`);
+    } catch (error) {
+      console.error("Error toggling block status:", error);
+      toast.error("Failed to update supplier status");
+    }
+  };
+
 
   // Use useCallback for handleDelete to prevent unnecessary re-creations of the function
   const handleDelete = useCallback(async (row: any) => {
@@ -86,6 +116,18 @@ const ViewUserPage = () => {
 
   const columns = [
     {
+      label: "S.No",
+      key: "serialNo",
+      render: (_: string, row: { serialNo: string }) => {
+        return (
+          <span>
+            {row?.serialNo}
+          </span>
+        );
+      }, 
+      sortable: false,
+    },
+    {
       label: "Name",
       key: "firstName",
       render: (_: string, row: { firstName: string; lastName: string }) => {
@@ -94,7 +136,7 @@ const ViewUserPage = () => {
             {row?.firstName} {row?.lastName}
           </span>
         );
-      }, // Combine first and last name
+      }, 
       sortable: true,
     },
     {
@@ -107,12 +149,20 @@ const ViewUserPage = () => {
       label: "Role",
       key: "userType",
       render: (_: string, row: { userType: IUserType }) => <span>{row?.userType?.role}</span>, // Directly render email
-      sortable: true,
+      sortable: false,
     },
     {
       label: "Status",
       key: "status",
-      render: (_: string, row: { isBlocked: boolean }) => <span>{row?.isBlocked ? "Blocked" : "Unblock"}</span>, // Check if user is blocked
+      render: (_: string, row: { isBlocked: boolean }) => (
+        <span
+          onClick={() => toggleBlockStatus(row)} // Call toggleBlockStatus on click
+          style={{ cursor: "pointer", color: row.isBlocked ? "red" : "green" }}
+          title="Click to toggle status"
+        >
+          {row.isBlocked ? "Blocked" : "Unblock"}
+        </span>
+      ),
       sortable: true,
     },
     {
@@ -163,7 +213,7 @@ const ViewUserPage = () => {
           <Loader className="animate-spin" size={64} />
         </div>
       ) : (
-        <DynamicTable columns={columns} data={users.data || []} caption="User Table" />
+        <DynamicTable columns={columns} data={users || []} caption="User Table" />
       )}
 
       <ViewModal opened={openView} setOpened={setOpenView} title="User Details">

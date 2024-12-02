@@ -12,6 +12,7 @@ import ImageUpload from "@/app/_components/ImageUpload/ImageUpload";
 
 // Define input types for form
 type Address = {
+  label: string;
   street: string;
   city: string;
   state: string;
@@ -35,6 +36,8 @@ type Inputs = {
 export default function ProfileSettingsPage() {
   const [userData, setUserData] = useState<Inputs | null>(null);
 
+  console.log("userDataaaaa : " , userData)
+
   const {
     register,
     handleSubmit,
@@ -45,6 +48,8 @@ export default function ProfileSettingsPage() {
   } = useForm<Inputs>({
     reValidateMode: "onChange",
   });
+
+  
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -72,46 +77,43 @@ export default function ProfileSettingsPage() {
 
 
 //   console.log(" get Value: ", getValues());
+const transformData = (data: Inputs) => {
+  return {
+    firstName: data.firstName,
+    lastName: data.lastName,
+    phoneNumber: data.phoneNumber,
+    dob: data.dob,
+    // profileImage: data.images[0] || "", // default to empty string if no image  // TODO: deal image properly
+    address: data.address.map((address: Address) => ({
+      _id: address._id,
+      label: address.label,
+      street: address.street,
+      city: address.city,
+      state: address.state,
+      postalCode: address.postalCode,
+      country: address.country,
+    })),
+  };
+};
+
 const onSubmit = useMutation({
-    mutationFn: async (data: Inputs) => {
-  
-      console.log("Data before : ", data.address)
-
-      // Restructure the data to send it in the correct format
-      const transformedData = {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        phoneNumber: data.phoneNumber,
-        dob: data.dob,
-        profileImage: data.images[0],
-        address: data.address.map((address: Address) => ({
-          _id: address._id,
-          street: address.street,
-          city: address.city,
-          state: address.state,
-          postalCode: address.postalCode,
-          country: address.country,
-        })),
-      };
-
-      console.log("transformedData after : ", transformedData)
-
-      try {
-        const response = await client.patch("auth/update-profile", transformedData, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
-  
-        toast.success(response.data.message);
-        return response.data;
-      } catch (error: any) {
-        console.error("Error updating profile:", error.message);
-        toast.error("Error updating profile. Please try again.");
-      }
-    },
-  });
+  mutationFn: async (data: Inputs) => {
+    const transformedData = transformData(data);
+    try {
+      const response = await client.patch("auth/update-profile", transformedData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      toast.success(response.data.message);
+      return response.data;
+    } catch (error: any) {
+      toast.error("Error updating profile. Please try again.");
+      console.error("Error:", error);
+    }
+  },
+});
   
     // onError: (error) => {
     //   toast.error("Something went wrong. Please try again later.");
@@ -426,6 +428,8 @@ const onSubmit = useMutation({
           errors={errors}
           fieldName="images"
           type="image"
+          compressImage={true}
+  coverImageEnabled={false}
         />
 
         <div className="md:col-span-2 lg:col-span-3 flex justify-end gap-5 mt-4">

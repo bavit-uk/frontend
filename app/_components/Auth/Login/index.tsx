@@ -98,7 +98,7 @@ const Login = ({}) => {
       } else if (data.userType === "Customer") {
         router.push("/vehicles");
       } else {
-        router.push("/dashboard");
+        router.push("/dashboard/settings");
       }
       dispatch(closeModal());
     },
